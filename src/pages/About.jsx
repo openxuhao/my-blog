@@ -38,7 +38,7 @@ export default function About() {
 
         <h2>联系我</h2>
         <div className="flex gap-4 not-prose">
-          <a href="https://github.com/openxuhao" target="_blank" rel="noopener" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-80 transition" style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+          <a href="https://github.com/SecNest" target="_blank" rel="noopener" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-80 transition" style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
             <ExternalLink size={18} />
             GitHub
           </a>
