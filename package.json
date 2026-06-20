@@ -7,27 +7,51 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push",
+    "db:local": "npx tsx scripts/migrate-local.ts",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy",
+    "cf:d1:init": "wrangler d1 create blog-db",
+    "cf:d1:tables": "wrangler d1 execute blog-db --file=./scripts/d1-schema.sql",
+    "cf:d1:seed": "wrangler d1 execute blog-db --file=./scripts/d1-seed.sql"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.4",
     "@tailwindcss/vite": "^4.3.1",
+    "@uiw/react-md-editor": "^4.1.1",
+    "bcryptjs": "^3.0.3",
+    "chart.js": "^4.5.1",
+    "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.3",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.21.0",
     "react": "^19.2.6",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.6",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.0",
     "remark-gfm": "^4.0.1",
-    "tailwindcss": "^4.3.1"
+    "sql.js": "^1.14.1",
+    "tailwindcss": "^4.3.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "tsx": "^4.22.4",
     "vite": "^8.0.12"
   }
 }
