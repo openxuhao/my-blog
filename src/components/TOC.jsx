@@ -18,20 +18,33 @@ export default function TOC({ content }) {
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
+            setActiveId(entry.target.textContent.trim())
           }
         })
       },
       { rootMargin: '-80px 0px -80% 0px' }
     )
 
-    headings.forEach(h => {
-      const el = document.getElementById(h.id)
-      if (el) observer.observe(el)
-    })
+    const timer = setTimeout(() => {
+      const proseHeadings = document.querySelectorAll('.prose h1, .prose h2, .prose h3')
+      proseHeadings.forEach(el => observer.observe(el))
+    }, 100)
 
-    return () => observer.disconnect()
+    return () => {
+      clearTimeout(timer)
+      observer.disconnect()
+    }
   }, [headings])
+
+  const scrollToHeading = (text) => {
+    const headings = document.querySelectorAll('.prose h1, .prose h2, .prose h3')
+    for (const el of headings) {
+      if (el.textContent.trim() === text.trim()) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        break
+      }
+    }
+  }
 
   if (headings.length === 0) return null
 
@@ -41,18 +54,18 @@ export default function TOC({ content }) {
       <ul>
         {headings.map(h => (
           <li key={h.id}>
-            <a
-              href={`#${h.id}`}
-              className={`block text-sm py-1 transition hover:opacity-80 ${
-                activeId === h.id ? 'font-medium' : ''
+            <button
+              onClick={() => scrollToHeading(h.text)}
+              className={`block text-sm py-1 transition hover:opacity-80 text-left w-full ${
+                activeId === h.text ? 'font-medium' : ''
               }`}
               style={{
-                color: activeId === h.id ? 'var(--accent)' : 'var(--text-secondary)',
+                color: activeId === h.text ? 'var(--accent)' : 'var(--text-secondary)',
                 paddingLeft: `${(h.level - 1) * 12}px`
               }}
             >
               {h.text}
-            </a>
+            </button>
           </li>
         ))}
       </ul>
