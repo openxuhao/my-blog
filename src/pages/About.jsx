@@ -42,10 +42,6 @@ export default function About() {
             <ExternalLink size={18} />
             GitHub
           </a>
-          <a href="mailto:987435269@qq.com" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-80 transition" style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
-            <ExternalLink size={18} />
-            Email
-          </a>
         </div>
       </div>
     </div>
